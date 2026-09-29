@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#10263f" />
   <meta name="description" content="A day-by-day Tokyo food and area itinerary for 6–15 November 2026." />
-  <title>Tokyo Table · November 2026</title>
+  <title>八卦最前线 Tokyo</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310263f'/%3E%3Ccircle cx='32' cy='24' r='13' fill='%23f05136'/%3E%3Cpath d='M18 45h28M24 39h16M28 31h8v14h-8z' stroke='%23fffaf0' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" />
   <style>
     :root {
@@ -28,7 +28,7 @@
       background:
         radial-gradient(circle at 10% 0%, rgba(227,75,50,.09), transparent 32rem),
         linear-gradient(180deg, #fbf8f1 0%, var(--paper) 100%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       font-size: 16px;
       line-height: 1.55;
     }
@@ -48,25 +48,25 @@
     main { padding: 28px 0 72px; }
     .intro { display: grid; grid-template-columns: 1.35fr .65fr; gap: 28px; align-items: stretch; margin-bottom: 24px; }
     .intro-copy { padding: 28px 0 18px; }
-    .eyebrow { color: var(--red); font-weight: 800; text-transform: uppercase; letter-spacing: .13em; font-size: .75rem; }
+    .eyebrow { color: var(--red); font-weight: 800; text-transform: uppercase; letter-spacing: .1em; font-size: .875rem; }
     h1 { margin: 10px 0 12px; max-width: 760px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.4rem, 7vw, 5.7rem); line-height: .96; letter-spacing: -.055em; font-weight: 600; }
     .dek { max-width: 690px; margin: 0; color: var(--ink-2); font-size: 1.05rem; }
     .quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 24px; max-width: 690px; }
     .stat { padding: 13px 14px; border: 1px solid var(--line); background: rgba(255,253,248,.68); border-radius: 14px; }
     .stat b { display: block; font-size: 1.4rem; line-height: 1.15; }
-    .stat span { color: var(--muted); font-size: .78rem; }
+    .stat span { color: var(--muted); font-size: .875rem; }
     .hero-img { min-height: 350px; border-radius: 26px; overflow: hidden; background: var(--ink); box-shadow: var(--shadow); position: relative; }
     .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .92; }
     .hero-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(16,38,63,.78)); }
     .hero-label { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 18px; color: white; }
     .hero-label strong { display: block; font-size: 1.2rem; }
-    .hero-label span { opacity: .82; font-size: .85rem; }
+    .hero-label span { opacity: .9; font-size: .875rem; }
 
     .toolbar { display: flex; align-items: center; gap: 9px; overflow-x: auto; padding: 8px 2px 18px; scrollbar-width: none; }
     .controls { padding: 14px 16px 2px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
     .filter-group { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 12px; }
     .filter-group + .filter-group { border-top: 1px solid #e9e5dc; }
-    .filter-label { margin: 0; color: var(--muted); font-size: .78rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .filter-label { margin: 0; color: var(--muted); font-size: .875rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
     .toolbar.day-filters { padding: 8px 0 12px; }
     .toolbar.type-filters { flex-wrap: wrap; overflow: visible; padding: 8px 0 12px; }
     .filter { border: 1px solid var(--line); color: var(--ink); background: var(--card); padding: 9px 14px; border-radius: 999px; white-space: nowrap; cursor: pointer; font-weight: 700; font-size: .88rem; }
@@ -83,18 +83,25 @@
     .day { background: var(--card); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; box-shadow: 0 8px 25px rgba(16,38,63,.055); }
     .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 18px 20px; color: white; background: var(--ink); }
     .day-head h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
-    .day-head span { color: #d5e0e9; font-size: .85rem; }
+    .day-head span { color: #d5e0e9; font-size: .875rem; }
     .stops { padding: 6px 20px 12px; }
-    .stop { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 15px; padding: 15px 0; border-bottom: 1px solid #e9e5dc; align-items: start; }
+    .stop { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 13px; padding: 15px 0; border-bottom: 1px solid #e9e5dc; align-items: center; }
+    .stop.with-photo { grid-template-columns: 68px 78px minmax(0, 1fr) auto; }
     .stop:last-child { border-bottom: 0; }
-    .time { font-weight: 850; color: var(--red); font-variant-numeric: tabular-nums; }
+    .time { font-weight: 850; color: var(--red); font-size: .875rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .time span { margin-left: 3px; }
     .stop h3 { margin: 0 0 3px; font-size: 1rem; }
-    .stop p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .stop p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .stop-photo { display: block; width: 78px; height: 72px; position: relative; overflow: hidden; border-radius: 12px; background: #e5e5df; }
+    .stop-photo img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .stop-photo span { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; border-radius: 5px; color: white; background: rgba(16,38,63,.86); font-size: .75rem; line-height: 1.2; font-weight: 850; letter-spacing: .02em; }
+    .stop-photo:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .stop-meta { display: grid; justify-items: end; gap: 6px; }
     .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; max-width: 190px; }
-    .chip { padding: 5px 8px; border-radius: 999px; background: #eef2f4; color: var(--ink-2); font-size: .72rem; font-weight: 800; }
+    .chip { padding: 5px 8px; border-radius: 999px; background: #eef2f4; color: var(--ink-2); font-size: .75rem; font-weight: 800; }
     .chip.book { background: #fff0bc; color: #695000; }
     .chip.new { background: var(--mint); color: #1f5143; }
-    .activity-badge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 11px; font-size: .8rem; line-height: 1.2; font-weight: 850; white-space: nowrap; }
+    .activity-badge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 11px; font-size: .875rem; line-height: 1.2; font-weight: 850; white-space: nowrap; }
     .activity-badge .activity-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; color: white; background: currentColor; font-size: .75rem; }
     .activity-food { --badge-ink: #963522; color: #963522; background: #f9e2d9; }
     .activity-shopping { --badge-ink: #674b94; color: #674b94; background: #eee6f7; }
@@ -106,12 +113,12 @@
     aside { position: sticky; top: 88px; display: grid; gap: 16px; }
     .panel { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; }
     .panel h2 { margin: 0 0 5px; font-size: 1.08rem; }
-    .panel-intro { margin: 0 0 12px; color: var(--muted); font-size: .82rem; }
+    .panel-intro { margin: 0 0 12px; color: var(--muted); font-size: .875rem; }
     .check { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid #e9e5dc; cursor: pointer; }
     .check:last-child { border-bottom: 0; }
     .check input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--red); }
     .check b { display: block; font-size: .88rem; }
-    .check small { display: block; color: var(--muted); font-size: .76rem; }
+    .check small { display: block; color: var(--muted); font-size: .875rem; }
     .check:has(input:checked) b { text-decoration: line-through; color: var(--muted); }
     .warning { border-left: 5px solid var(--red); }
     .warning p { margin: 8px 0 0; color: var(--ink-2); font-size: .84rem; }
@@ -126,16 +133,21 @@
     .food-body { padding: 16px; }
     .food-body .kicker { color: var(--red); font-size: .72rem; font-weight: 850; text-transform: uppercase; letter-spacing: .1em; }
     .food-body h3 { margin: 5px 0 6px; font-size: 1.08rem; }
-    .food-body p { margin: 0; color: var(--muted); font-size: .84rem; }
-    .source-link { display: inline-block; margin-top: 11px; font-size: .82rem; font-weight: 800; text-underline-offset: 3px; }
+    .food-body p { margin: 0; color: var(--muted); font-size: .875rem; }
+    .source-link { display: inline-block; margin-top: 11px; font-size: .875rem; font-weight: 800; text-underline-offset: 3px; }
+    .photo-credits { flex: 1; }
+    .photo-credits summary { font-size: .9rem; font-weight: 800; cursor: pointer; }
+    .photo-credits ul { margin: 10px 0 0; padding-left: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 24px; }
+    .photo-credits li { font-size: .8rem; line-height: 1.5; }
     .backups { margin-top: 16px; padding: 16px 18px; border: 1px dashed #a5a79f; border-radius: 16px; background: rgba(255,253,248,.55); }
     .backups strong { display: block; margin-bottom: 5px; }
     .backups p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .photo-note { margin: 0 0 12px; padding: 0 2px; color: var(--muted); font-size: .875rem; }
     footer { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: .78rem; }
 
     @media (max-width: 900px) {
       .intro { grid-template-columns: 1fr; }
-      .hero-img { min-height: 280px; }
+      .hero-img { min-height: 240px; }
       .layout { grid-template-columns: 1fr; }
       aside { position: static; grid-template-columns: 1fr 1fr; }
       .food-grid { grid-template-columns: 1fr 1fr; }
@@ -144,8 +156,12 @@
       .shell { width: min(100% - 22px, 1180px); }
       .nav-meta { display: none; }
       main { padding-top: 16px; }
-      .intro-copy { padding-top: 10px; }
-      .quick-stats { grid-template-columns: 1fr 1fr 1fr; }
+      .intro { gap: 12px; margin-bottom: 16px; }
+      .intro-copy { padding: 2px 0 0; }
+      h1 { font-size: clamp(2.15rem, 10vw, 3rem); }
+      .dek { font-size: .98rem; }
+      .hero-img { min-height: 0; height: 140px; border-radius: 18px; }
+      .quick-stats { grid-template-columns: 1fr 1fr 1fr; margin-top: 14px; gap: 7px; }
       .stat { padding: 10px; }
       .stat b { font-size: 1.15rem; }
       .layout { gap: 16px; }
@@ -154,19 +170,30 @@
       .filter-group { grid-template-columns: 1fr; gap: 0; }
       .filter-group + .filter-group { padding-top: 4px; }
       .toolbar.day-filters, .toolbar.type-filters { padding: 7px 0 10px; }
-      .stop { grid-template-columns: 72px minmax(0, 1fr); gap: 10px; }
-      .chips, .activity-badge { grid-column: 2; justify-content: flex-start; max-width: none; width: fit-content; }
+      .stop { grid-template-columns: 50px minmax(0, 1fr); gap: 8px; padding: 13px 0; align-items: start; }
+      .stop.with-photo { grid-template-columns: 56px 58px minmax(0, 1fr); }
+      .time { white-space: normal; }
+      .time span { display: block; margin-left: 0; }
+      .stop-photo { width: 58px; height: 58px; border-radius: 10px; }
+      .stop.with-photo .stop-copy { grid-column: 3; }
+      .stop:not(.with-photo) .stop-copy { grid-column: 2; }
+      .stop-meta { grid-column: 3; display: flex; flex-wrap: wrap; justify-items: start; align-items: center; gap: 5px; }
+      .stop:not(.with-photo) .stop-meta { grid-column: 2; }
+      .stop-meta .chips { justify-content: flex-start; max-width: none; }
+      .activity-badge { padding: 6px 8px; font-size: .8125rem; }
       aside { grid-template-columns: 1fr; }
       .food-grid { grid-template-columns: 1fr; }
       .section-title { display: block; }
       footer { display: block; }
+      .photo-credits { margin-top: 12px; }
+      .photo-credits ul { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="shell nav">
-      <div class="brand"><span class="mark">東</span><span>Tokyo Table</span></div>
+      <div class="brand"><span class="mark">東</span><span>八卦最前线 Tokyo</span></div>
       <div class="nav-meta">6–15 November 2026 · Tokyo, Fuji and Hakone</div>
     </div>
   </header>
@@ -184,7 +211,7 @@
         </div>
       </div>
       <figure class="hero-img">
-        <img id="hero-image" src="https://upload.wikimedia.org/wikipedia/commons/d/dc/View_from_Tokyo_Skytree_in_dusk.jpg" alt="Tokyo skyline fading into dusk, viewed from the Tokyo Skytree observation deck" />
+        <img id="hero-image" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/View_from_Tokyo_Skytree_in_dusk.jpg?width=1200" alt="Tokyo at dusk viewed from the Skytree observation deck" />
         <figcaption class="hero-label"><strong>Tokyo, one neighbourhood at a time</strong><span>Sumida · Ikebukuro · Ginza · Shibuya · Harajuku</span></figcaption>
       </figure>
     </section>
@@ -192,6 +219,7 @@
     <section class="controls" aria-label="Filter itinerary">
       <div class="filter-group"><h2 class="filter-label">Choose day</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
       <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
+      <p class="photo-note">Photo tags: PLACE is the stop; AREA is nearby; DISH and REP are representative images, not photos from the named restaurant or venue.</p>
     </section>
 
     <div class="layout">
@@ -217,11 +245,11 @@
       </div>
       <div class="food-grid">
         <article class="food-card">
-          <img id="food-image" src="https://upload.wikimedia.org/wikipedia/commons/9/95/Street_food_in_Tokyo_Japan_2017.jpg" alt="Bustling Tokyo street-food stall with skewers, steaming pots, and colorful Japanese banners" />
+          <img id="food-image" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Street_food_in_Tokyo_Japan_2017.jpg?width=960" alt="Street food in Shibuya, Tokyo" loading="lazy" decoding="async" />
           <div class="food-body"><div class="kicker">Added from research</div><h3>Three genuinely new tastes</h3><p>Komeraku ochazuke, Yamachan-style izakaya wings and a Jean-Paul Hévin chocolate break.</p></div>
         </article>
         <article class="food-card">
-          <img id="teamlab-image" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Teamlab_toyosu.jpg" alt="Immersive mirrored light installation inside teamLab Planets in Toyosu" />
+          <img id="teamlab-image" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Teamlab_toyosu.jpg?width=960" alt="teamLab Planets in Toyosu" loading="lazy" decoding="async" />
           <div class="food-body"><div class="kicker">Nov 12 · Toyosu</div><h3>teamLab before Ginza</h3><p>A morning timed entry flows naturally to Marunouchi sushi and an afternoon in Ginza.</p><a class="source-link" href="https://teamlabplanets.dmm.com/en" target="_blank" rel="noreferrer">Official tickets</a></div>
         </article>
         <article class="food-card">
@@ -231,7 +259,10 @@
       <div class="backups"><strong>Keep these as backups, not extra meals</strong><p>Shabu Shabu Yamaru for Tempura Abe · Harajuku Gyozaro for Maisen · Mr Farmer for a vegetarian option · Truffle Bakery only if the queue fits the day.</p></div>
     </section>
 
-    <footer><span>Built from the two trip-planning sheets and current venue information.</span><span id="image-credit">Images: <a href="https://commons.wikimedia.org/wiki/File:View_from_Tokyo_Skytree_in_dusk.jpg">そらみみ</a> and <a href="https://commons.wikimedia.org/wiki/File:Street_food_in_Tokyo_Japan_2017.jpg">Adrian Grycuk</a>, CC BY-SA 3.0; <a href="https://commons.wikimedia.org/wiki/File:Teamlab_toyosu.jpg">Syced</a>, CC0.</span></footer>
+    <footer>
+      <span>Built from the two trip-planning sheets and current venue information.</span>
+      <details class="photo-credits"><summary>Photo credits and licenses</summary><ul id="photo-credit-list"></ul></details>
+    </footer>
   </main>
 
   <script>
@@ -241,6 +272,86 @@
       fun: { label: 'Attraction / Fun', icon: '遊', className: 'activity-fun' },
       culture: { label: 'Temple / Culture', icon: '寺', className: 'activity-culture' },
       travel: { label: 'Travel', icon: '移', className: 'activity-travel' }
+    };
+
+    const photoAsset = (file, author, license, licenseUrl, alt) => {
+      const encodedFile = encodeURIComponent(file.replaceAll(' ', '_'));
+      return {
+        src: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodedFile + '?width=480',
+        source: 'https://commons.wikimedia.org/wiki/File:' + encodedFile,
+        title: file.replace(/\.[^.]+$/, '').replaceAll('_', ' '),
+        author, license, licenseUrl, alt
+      };
+    };
+    const photoLibrary = {
+      dusk: photoAsset('View_from_Tokyo_Skytree_in_dusk.jpg', 'そらみみ', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'Tokyo at dusk viewed from the Skytree observation deck.'),
+      skytree: photoAsset('Tokyo_Skytree_20200815-1.jpg', 'Suicasmo', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Tokyo Skytree illuminated against the night sky.'),
+      solamachi: photoAsset('Tokyo_Skytree_&_Tokyo_Solamachi_20120608.jpg', 'ＤＡＶＩＤ', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'Tokyo Skytree rising above the Tokyo Solamachi complex.'),
+      wings: photoAsset('Tebasaki_karaage_by_kawanet_in_Kanayama,_Nagoya.jpg', 'kawanet', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Representative tebasaki fried chicken wings, photographed at a different Sekai no Yamachan branch.'),
+      coffee: photoAsset('Coffee_cup_and_coffee_beans.jpg', 'Huda farhat', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative black coffee cup surrounded by roasted coffee beans; not from a Tokyo venue.'),
+      ramen: photoAsset('Spicy_Miso_Ramen_@_Shinasoba_Yaguratei_@_Shibuya_(11449861754).jpg', 'Guilhem Vellut', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Representative spicy miso ramen photographed at another Tokyo ramen shop.'),
+      kaminarimon: photoAsset('Senso-ji_Kaminarimon_201503a.jpg', 'Tak1701d', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'The giant red lantern at Kaminarimon Gate, Asakusa.'),
+      nakamise: photoAsset('Nakamise-Dori_(3800868893).jpg', 'Andrea Schaffer', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Crowds and traditional storefronts along Nakamise-dori in Asakusa.'),
+      sumida: photoAsset('Sumida-Ward_Sumida-river.jpg', 'MaedaAkihiko', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Aerial view across the Sumida River with Tokyo Skytree visible.'),
+      eel: photoAsset('Eel_bowl,_bowl_of_eel_and_rice;_2013.jpg', 'Toshihiro Gamo', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Representative Japanese grilled-eel rice bowl; not photographed at Izumo.'),
+      fish: photoAsset('Grilled_Fish_HokkeChanChanYaki.jpg', 'サフィル', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative grilled hokke fish; not a Shinpachi Shokudo set meal.'),
+      sunshine: photoAsset('View_of_the_Tokyo_skyline_from_the_top_of_Sunshine_City.jpg', 'Insightwm', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Tokyo skyline at dusk viewed from Sunshine City in central Ikebukuro.'),
+      gashapon: photoAsset('Gashapon_machine.jpg', 'fukhops', 'Public domain', '', 'Representative rows of Bandai Capsule Station gashapon machines; not a specific store.'),
+      teamlab: photoAsset('Teamlab_toyosu.jpg', 'Syced', 'CC0 1.0', 'https://creativecommons.org/publicdomain/zero/1.0/', 'teamLab Planets in Toyosu.'),
+      sushi: photoAsset('Sushi_platter.jpg', 'chidorian', 'CC BY-SA 2.0', 'https://creativecommons.org/licenses/by-sa/2.0/', 'Representative assortment of sushi; not from Nemuro Hanamaru.'),
+      yurakucho: photoAsset('Yurakucho_(54085075287).jpg', 'Dick Thomas Johnson', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Street scene in Yurakucho, Tokyo.'),
+      wagashi: photoAsset('Wagashi_001.jpg', 'Toukou Sousui 淙穂鶫箜', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Representative handcrafted wagashi; not from Oosumi Tamaya.'),
+      tempura: photoAsset('Tempura_dinner_by_Ian_Muttoo_in_Tokyo.jpg', 'Ian Muttoo', 'CC BY-SA 2.0', 'https://creativecommons.org/licenses/by-sa/2.0/', 'Representative Tokyo tempura dinner; not photographed at Tempura Abe.'),
+      ochazuke: photoAsset('水茄子の糠漬け（お茶漬け）.jpg', 'Saichi31', 'CC0 1.0', 'https://creativecommons.org/publicdomain/zero/1.0/', 'Representative ochazuke topped with pickled eggplant; not a Komeraku dish.'),
+      crossing: photoAsset('Shibuya_Crossing,_Aerial.jpg', 'David Kernan', 'CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/', 'Shibuya Crossing seen from above at night.'),
+      hamburg: photoAsset('Hamburg-Steak.jpg', 'MaedaAkihiko', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative Japanese hamburg steak; not from Hikiniku to Kome.'),
+      shibuyaSky: photoAsset('Shibuya_Sky_Observation_Deck_(53415730632).jpg', 'Stephen Kelly', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Open-air rooftop observation deck at Shibuya Sky.'),
+      monja: photoAsset('Monjayaki_on_the_teppan.jpg', 'Douglas P Perkins', 'CC BY 3.0', 'https://creativecommons.org/licenses/by/3.0/', 'Representative monjayaki cooking on a teppan; not photographed at Moheji.'),
+      miniPig: photoAsset('Mini_Pig.jpg', 'Fcobmz', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative miniature piglet; not photographed at mipig cafe.'),
+      donuts: photoAsset('Three_Pon_de_Ring_doughnuts.jpg', 'さえぼー', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative Japanese doughnuts; not from AMAM DACOTAN or I’m donut?.'),
+      tonkatsu: photoAsset('Japanese_tonkatsu.jpg', 'Pavel Kanzelsberger', 'Public domain', '', 'Representative Japanese tonkatsu set; not from Maisen.'),
+      catStreet: photoAsset('Harajuku-Cat-street-01.jpg', 'Rs1421', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'Pedestrian lane and shops on Harajuku Cat Street.'),
+      chocolate: photoAsset('Hot_Chocolate.jpg', 'KR Chrutti', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'Representative cup of hot chocolate; not from Jean-Paul Hévin.'),
+      akasaka: photoAsset('Akasaka_Hitotsugi_Street_,Tokyo-pref._-_panoramio.jpg', 'JiroS.', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'Urban streetscape along Hitotsugi Street in Akasaka, Tokyo.'),
+      pizza: photoAsset('Sourdough_pizza.jpg', 'jeffreyw', 'CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/', 'Representative sourdough pizza; not prepared at SABASU.'),
+      streetFood: photoAsset('Street_food_in_Tokyo_Japan_2017.jpg', 'Adrian Grycuk', 'CC BY-SA 3.0 Poland', 'https://creativecommons.org/licenses/by-sa/3.0/pl/', 'Street food in Shibuya, Tokyo.')
+    };
+    const stopPhotos = {
+      'Tokyo Skytree observation deck': { id: 'skytree', type: 'PLACE' },
+      'Tokyo Solamachi': { id: 'solamachi', type: 'PLACE' },
+      'Sekai no Yamachan · Kinshicho': { id: 'wings', type: 'DISH' },
+      'Leaves Coffee Roasters': { id: 'coffee', type: 'DISH' },
+      'Motenashi Kuroki': { id: 'ramen', type: 'DISH' },
+      'Kaminarimon Gate': { id: 'kaminarimon', type: 'PLACE' },
+      'Nakamise Shopping Street': { id: 'nakamise', type: 'PLACE' },
+      'Senso-ji Temple': { id: 'kaminarimon', type: 'AREA', alt: 'Kaminarimon Gate in the Sensō-ji precinct, near the main temple hall.' },
+      'Sumida River walk': { id: 'sumida', type: 'AREA' },
+      'Izumo Ikebukuro': { id: 'eel', type: 'DISH' },
+      'Shinpachi Shokudo': { id: 'fish', type: 'DISH' },
+      'Espresso D Works': { id: 'coffee', type: 'DISH' },
+      'Sunshine City': { id: 'sunshine', type: 'AREA' },
+      'Gashapon Department Store': { id: 'gashapon', type: 'REP' },
+      'Kikanbo Ikebukuro': { id: 'ramen', type: 'DISH' },
+      'teamLab Planets': { id: 'teamlab', type: 'PLACE' },
+      'Nemuro Hanamaru · KITTE': { id: 'sushi', type: 'DISH' },
+      'Ginza & Yurakucho': { id: 'yurakucho', type: 'AREA' },
+      'More Ginza shopping': { id: 'yurakucho', type: 'AREA', alt: 'Yurakucho street scene beside the Ginza shopping district.' },
+      'Oosumi Tamaya': { id: 'wagashi', type: 'DISH' },
+      'Tempura Abe Ginza': { id: 'tempura', type: 'DISH' },
+      'Komeraku': { id: 'ochazuke', type: 'DISH' },
+      'Shibuya shops': { id: 'crossing', type: 'AREA', alt: 'Shibuya Crossing at night, in the shopping district around the station.' },
+      'Scramble Crossing': { id: 'crossing', type: 'PLACE' },
+      'Hikiniku to Come': { id: 'hamburg', type: 'DISH' },
+      'Kuro Mame or Acid Coffee': { id: 'coffee', type: 'DISH' },
+      'Optional Shibuya Sky': { id: 'shibuyaSky', type: 'PLACE' },
+      'Moheji · Scramble Square': { id: 'monja', type: 'DISH' },
+      'mipig cafe Harajuku': { id: 'miniPig', type: 'REP' },
+      'AMAM DACOTAN / I’m donut?': { id: 'donuts', type: 'DISH' },
+      'Tonkatsu Maisen Aoyama': { id: 'tonkatsu', type: 'DISH' },
+      'Cat Street & Omotesando': { id: 'catStreet', type: 'AREA', alt: 'Harajuku Cat Street on the walk toward Omotesando.' },
+      'Jean-Paul Hévin': { id: 'chocolate', type: 'DISH' },
+      'Travel to Akasaka': { id: 'akasaka', type: 'AREA', alt: 'Akasaka Hitotsugi Street, the neighborhood around dinner.' },
+      'SABASU · Akasaka': { id: 'pizza', type: 'DISH' }
     };
 
     const days = [
@@ -323,22 +434,33 @@
       return '';
     }
 
+    function renderStopPhoto(name) {
+      const reference = stopPhotos[name];
+      if (!reference) return '';
+      const photo = photoLibrary[reference.id];
+      const alt = reference.alt || photo.alt;
+      return '<a class="stop-photo" href="' + photo.source + '" target="_blank" rel="noopener noreferrer" aria-label="Open photo source for ' + name + ': ' + alt + '">' +
+        '<img src="' + photo.src + '" alt="' + alt + '" loading="lazy" decoding="async" />' +
+        '<span aria-hidden="true">' + reference.type + '</span></a>';
+    }
+
     function renderDays() {
       timeline.innerHTML = days.filter(day => activeDay === 'all' || day.key === activeDay).map(day => {
         const stops = day.stops.filter(stop => activeCategory === 'all' || stop[3] === activeCategory);
         if (!stops.length) return '';
-        return `
-        <article class="day">
-          <div class="day-head"><h2>${day.date}</h2><span>${day.area}</span></div>
-          <div class="stops">${stops.map(stop => `
-            <div class="stop">
-              <div class="time">${stop[0]}</div>
-              <div><h3>${stop[1]}</h3><p>${stop[2]}</p></div>
-              <span class="activity-badge ${categories[stop[3]].className}"><span class="activity-icon" aria-hidden="true">${categories[stop[3]].icon}</span>${categories[stop[3]].label}</span>
-              <div class="chips">${stop[4].map(tag => `<span class="chip ${chipClass(tag)}">${tag}</span>`).join('')}</div>
-            </div>`).join('')}
-          </div>
-        </article>`;
+        return '<article class="day">' +
+          '<div class="day-head"><h2>' + day.date + '</h2><span>' + day.area + '</span></div>' +
+          '<div class="stops">' + stops.map(stop => {
+            const hasPhoto = Boolean(stopPhotos[stop[1]]);
+            const category = categories[stop[3]];
+            return '<div class="stop ' + (hasPhoto ? 'with-photo' : '') + '">' +
+              '<div class="time">' + stop[0].replace(/ (AM|PM)$/, '<span>$1</span>') + '</div>' +
+              renderStopPhoto(stop[1]) +
+              '<div class="stop-copy"><h3>' + stop[1] + '</h3><p>' + stop[2] + '</p></div>' +
+              '<div class="stop-meta"><span class="activity-badge ' + category.className + '"><span class="activity-icon" aria-hidden="true">' + category.icon + '</span>' + category.label + '</span>' +
+              '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + tag + '</span>').join('') + '</div></div>' +
+              '</div>';
+          }).join('') + '</div></article>';
       }).join('');
     }
 
@@ -381,9 +503,22 @@
       });
     }
 
+    function renderPhotoCredits() {
+      const credits = document.querySelector('#photo-credit-list');
+      const used = new Set([...Object.values(stopPhotos).map(reference => reference.id), 'dusk', 'streetFood', 'teamlab']);
+      credits.innerHTML = [...used].map(id => {
+        const photo = photoLibrary[id];
+        const license = photo.licenseUrl
+          ? '<a href="' + photo.licenseUrl + '" target="_blank" rel="noopener noreferrer">' + photo.license + '</a>'
+          : photo.license;
+        return '<li><a href="' + photo.source + '" target="_blank" rel="noopener noreferrer">' + photo.title + '</a> — ' + photo.author + ', ' + license + '; cropped to fit.</li>';
+      }).join('');
+    }
+
     renderFilters();
     renderDays();
     renderBookings();
+    renderPhotoCredits();
   </script>
 </body>
 </html>
