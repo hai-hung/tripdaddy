@@ -83,8 +83,27 @@
     body.edit-mode .day-add { display: inline-flex; align-items: center; }
     body.edit-mode .day-head { align-items: center; }
     .day-head-tools { display: flex; align-items: center; gap: 12px; }
+    .accommodation { margin: 0 0 18px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 8px 25px rgba(16,38,63,.045); }
+    .accommodation-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 20px; margin-bottom: 12px; }
+    .accommodation-heading h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.6rem; font-weight: 600; letter-spacing: -.03em; }
+    .accommodation-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .accommodation table { width: 100%; border-collapse: collapse; text-align: left; }
+    .accommodation th { padding: 10px 12px; color: var(--muted); background: #f0ede5; font-size: .8rem; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
+    .accommodation td { padding: 13px 12px; border-bottom: 1px solid #e9e5dc; vertical-align: top; }
+    .accommodation tr:last-child td { border-bottom: 0; }
+    .accommodation td:first-child, .accommodation td:nth-child(3) { white-space: nowrap; font-weight: 800; }
+    .stay-name { display: block; font-weight: 850; }
+    .stay-note { display: block; margin-top: 3px; color: var(--muted); font-size: .875rem; font-weight: 400; }
+    .night-check { color: #8c5a15; }
     .edit-dialog { width: min(560px, calc(100% - 24px)); max-height: min(88vh, 850px); padding: 0; border: 1px solid var(--line); border-radius: 20px; color: var(--ink); background: var(--card); box-shadow: 0 24px 80px rgba(16,38,63,.25); }
     .edit-dialog::backdrop { background: rgba(16,38,63,.55); backdrop-filter: blur(3px); }
+    .image-dialog { width: min(1000px, calc(100% - 24px)); max-width: 1000px; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.2); border-radius: 18px; color: white; background: #0b1724; box-shadow: 0 24px 80px rgba(16,38,63,.4); }
+    .image-dialog::backdrop { background: rgba(8,17,27,.82); backdrop-filter: blur(5px); }
+    .image-view { position: relative; display: grid; min-height: 180px; place-items: center; padding: 18px 18px 0; }
+    .image-view img { display: block; max-width: 100%; max-height: min(78vh, 900px); object-fit: contain; border-radius: 8px; }
+    .image-caption { margin: 0; padding: 12px 18px 16px; color: #d9e2e8; font-size: .9rem; }
+    .image-close { position: absolute; top: 12px; right: 12px; z-index: 1; min-height: 44px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: white; background: rgba(11,23,36,.88); cursor: pointer; font-weight: 800; }
+    .image-close:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
     .dialog-inner { padding: 22px; }
     .dialog-inner h2 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 1.6rem; }
     .dialog-hint { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
@@ -126,6 +145,7 @@
     .stop h3 { margin: 0 0 3px; font-size: 1rem; }
     .stop p { margin: 0; color: var(--muted); font-size: 1rem; }
     .stop-photo { display: block; width: 78px; height: 72px; position: relative; overflow: hidden; border-radius: 12px; background: #e5e5df; }
+    button.stop-photo { padding: 0; border: 0; color: inherit; text-align: left; cursor: zoom-in; }
     .stop-photo img { width: 100%; height: 100%; display: block; object-fit: cover; }
     .stop-photo span { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; border-radius: 5px; color: white; background: rgba(16,38,63,.86); font-size: .75rem; line-height: 1.2; font-weight: 850; letter-spacing: .02em; }
     .stop-photo:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
@@ -233,6 +253,16 @@
       .form-field.full { grid-column: auto; }
       .dialog-inner { padding: 18px; }
       .dialog-actions .plan-button { flex: 1; }
+      .accommodation { padding: 15px; }
+      .accommodation table, .accommodation tbody, .accommodation tr, .accommodation td { display: block; width: 100%; }
+      .accommodation thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+      .accommodation tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .accommodation tr:last-child { border-bottom: 0; }
+      .accommodation td { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; padding: 7px 0; border: 0; white-space: normal !important; }
+      .accommodation td::before { content: attr(data-label); color: var(--muted); font-size: .8rem; font-weight: 850; text-transform: uppercase; }
+      .image-view { padding: 54px 10px 0; }
+      .image-view img { max-height: 76vh; }
+      .image-caption { padding: 11px 14px 14px; }
     }
   </style>
 </head>
@@ -260,6 +290,23 @@
         <img id="hero-image" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/View_from_Tokyo_Skytree_in_dusk.jpg?width=1200" alt="Tokyo at dusk viewed from the Skytree observation deck" />
         <figcaption class="hero-label"><strong>Tokyo, one neighbourhood at a time</strong><span>Sumida · Ikebukuro · Ginza · Shibuya · Harajuku</span></figcaption>
       </figure>
+    </section>
+
+    <section class="accommodation" aria-labelledby="accommodation-title">
+      <div class="accommodation-heading">
+        <h2 id="accommodation-title">Where we’re staying</h2>
+        <p>Check-in, checkout and nights for the full trip.</p>
+      </div>
+      <table>
+        <thead><tr><th scope="col">Stay</th><th scope="col">Accommodation</th><th scope="col">Nights</th><th scope="col">Area</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Stay">Nov 6 → Nov 8 checkout</td><td data-label="Accommodation"><span class="stay-name">Yoshii House Skytree</span></td><td data-label="Nights">2</td><td data-label="Area">Sumida / Skytree, Tokyo</td></tr>
+          <tr><td data-label="Stay">Nov 8 → Nov 9 checkout</td><td data-label="Accommodation"><span class="stay-name">Hoei Villas-Fujisan Panoramic View of Mt. Fuji</span></td><td data-label="Nights">1</td><td data-label="Area">Kawaguchiko</td></tr>
+          <tr><td data-label="Stay">Nov 9 → Nov 10 checkout</td><td data-label="Accommodation"><span class="stay-name">Hut in Hakone 箱根</span></td><td data-label="Nights">1</td><td data-label="Area">Hakone</td></tr>
+          <tr><td data-label="Stay">Nov 10 → Nov 15 checkout</td><td data-label="Accommodation"><span class="stay-name">3F, 5 minutes from Kitaikebukuro</span><span class="stay-note">Tokyo base for the final stretch</span></td><td data-label="Nights"><span class="night-check">4 stated · dates suggest 5</span></td><td data-label="Area">Kitaikebukuro, Toshima-ku</td></tr>
+        </tbody>
+      </table>
+      <p class="stay-note">Night-count check: Nov 10 check-in and Nov 15 checkout normally means 5 nights (Nov 10–14); the original note says 4. Confirm the booking dates.</p>
     </section>
 
     <section class="controls" aria-label="Filter itinerary">
@@ -351,6 +398,11 @@
             <label for="stop-category">Purpose</label>
             <select id="stop-category" name="category" required></select>
           </div>
+          <div class="form-field full">
+            <label for="stop-image-url">Image URL (optional)</label>
+            <input id="stop-image-url" name="imageUrl" type="url" maxlength="2048" placeholder="https://…" />
+            <small class="stay-note">Use a direct public HTTPS image link. Tap the photo in the itinerary to enlarge it.</small>
+          </div>
         </div>
         <div class="dialog-actions">
           <button class="plan-button" id="cancel-stop" type="button">Cancel</button>
@@ -370,6 +422,14 @@
         <button class="plan-button primary" id="apply-import" type="button">Apply to this browser</button>
       </div>
     </div>
+  </dialog>
+
+  <dialog class="image-dialog" id="image-dialog" aria-labelledby="image-caption">
+    <div class="image-view">
+      <button class="image-close" id="close-image" type="button">Close photo</button>
+      <img id="expanded-image" alt="" />
+    </div>
+    <p class="image-caption" id="image-caption"></p>
   </dialog>
 
   <script>
@@ -523,6 +583,16 @@
     const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
     const PLAN_FORMAT = 'tokyo-trip-itinerary-draft';
 
+    function normalizeImageUrl(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      if (raw.length > 2048) throw new Error('Image URL must be 2,048 characters or fewer.');
+      let parsed;
+      try { parsed = new URL(raw); } catch { throw new Error('Enter a complete image URL beginning with https://.'); }
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password) throw new Error('Image URLs must use HTTPS and must not contain login details.');
+      return parsed.href;
+    }
+
     function normalizePlan(candidate) {
       if (!Array.isArray(candidate) || candidate.length !== defaultDays.length) throw new Error('This file does not contain all expected trip dates.');
       const byKey = new Map(candidate.map(day => [day?.key, day]));
@@ -531,7 +601,7 @@
         const supplied = byKey.get(template.key);
         if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
         const stops = supplied.stops.map(stop => {
-          if (!Array.isArray(stop) || stop.length < 5 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
+          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 6 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
             throw new Error('A stop in the draft has an invalid format.');
           }
           const time = stop[0].trim();
@@ -539,7 +609,9 @@
           const note = stop[2].trim();
           const tags = stop[4].filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
           if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
-          return [time, name, note, stop[3], tags];
+          if (stop[5] != null && typeof stop[5] !== 'string') throw new Error('A stop image URL must be text.');
+          const imageUrl = normalizeImageUrl(stop[5]);
+          return imageUrl ? [time, name, note, stop[3], tags, imageUrl] : [time, name, note, stop[3], tags];
         });
         return { key: template.key, date: template.date, area: template.area, stops };
       });
@@ -619,14 +691,21 @@
       return '';
     }
 
-    function renderStopPhoto(name) {
+    function renderStopPhoto(stop) {
+      const name = stop[1];
+      if (stop[5]) {
+        return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-url="' + escapeHtml(stop[5]) + '" data-image-alt="' + escapeHtml(name) + '" data-image-caption="Added image for ' + escapeHtml(name) + '" aria-label="Enlarge photo for ' + escapeHtml(name) + '">' +
+          '<img src="' + escapeHtml(stop[5]) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" />' +
+          '<span aria-hidden="true">ADDED</span></button>';
+      }
       const reference = stopPhotos[name];
       if (!reference) return '';
       const photo = photoLibrary[reference.id];
       const alt = reference.alt || photo.alt;
-      return '<a class="stop-photo" href="' + escapeHtml(photo.source) + '" target="_blank" rel="noopener noreferrer" aria-label="Open photo source for ' + escapeHtml(name) + ': ' + escapeHtml(alt) + '">' +
+      const fullSize = photo.src.replace('width=480', 'width=1400');
+      return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-url="' + escapeHtml(fullSize) + '" data-image-alt="' + escapeHtml(alt) + '" data-image-caption="' + escapeHtml(name + ' · ' + alt) + '" aria-label="Enlarge photo for ' + escapeHtml(name) + '">' +
         '<img src="' + escapeHtml(photo.src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" decoding="async" />' +
-        '<span aria-hidden="true">' + escapeHtml(reference.type) + '</span></a>';
+        '<span aria-hidden="true">' + escapeHtml(reference.type) + '</span></button>';
     }
 
     function renderDays() {
@@ -637,7 +716,7 @@
           '<div class="day-head"><h2>' + escapeHtml(day.date) + '</h2><div class="day-head-tools"><span>' + escapeHtml(day.area) + '</span>' +
             '<button class="day-add" type="button" data-add-day="' + escapeHtml(day.key) + '">Add stop</button></div></div>' +
           '<div class="stops">' + visibleStops.map(({ stop, index }) => {
-            const hasPhoto = Boolean(stopPhotos[stop[1]]);
+            const hasPhoto = Boolean(stopPhotos[stop[1]] || stop[5]);
             const category = categories[stop[3]];
             const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
             const actions = editMode
@@ -650,7 +729,7 @@
               : '';
             return '<div class="stop ' + (hasPhoto ? 'with-photo' : '') + '">' +
               '<div class="time">' + safeTime + '</div>' +
-              renderStopPhoto(stop[1]) +
+              renderStopPhoto(stop) +
               '<div class="stop-copy"><h3>' + escapeHtml(stop[1]) + '</h3><p>' + escapeHtml(stop[2]) + '</p></div>' +
               '<div class="stop-meta"><span class="activity-badge ' + category.className + '"><span class="activity-icon" aria-hidden="true">' + category.icon + '</span>' + category.label + '</span>' +
               '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + escapeHtml(tag) + '</span>').join('') + '</div>' + actions + '</div>' +
@@ -727,6 +806,7 @@
       document.querySelector('#stop-time').value = stop?.[0] || '';
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
+      document.querySelector('#stop-image-url').value = stop?.[5] || '';
       categorySelect.value = stop?.[3] || 'food';
       stopDialog.showModal();
       document.querySelector('#stop-time').focus();
@@ -761,13 +841,25 @@
 
       document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? defaultDays[0].key : activeDay));
       document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
+      const imageUrlField = document.querySelector('#stop-image-url');
+      imageUrlField.addEventListener('input', () => imageUrlField.setCustomValidity(''));
       stopForm.addEventListener('submit', event => {
         event.preventDefault();
         const form = new FormData(stopForm);
         const targetDayKey = String(form.get('day'));
         const targetDay = days.find(day => day.key === targetDayKey);
         if (!targetDay) return;
+        let imageUrl;
+        try {
+          imageUrl = normalizeImageUrl(String(form.get('imageUrl') || ''));
+          imageUrlField.setCustomValidity('');
+        } catch (error) {
+          imageUrlField.setCustomValidity(error instanceof Error ? error.message : 'Enter a direct HTTPS image URL.');
+          imageUrlField.reportValidity();
+          return;
+        }
         const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), String(form.get('category')), []];
+        if (imageUrl) stop.push(imageUrl);
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
           if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
@@ -785,6 +877,16 @@
       });
 
       timeline.addEventListener('click', event => {
+        const imageButton = event.target.closest('[data-enlarge-image]');
+        if (imageButton) {
+          const imageDialog = document.querySelector('#image-dialog');
+          const expandedImage = document.querySelector('#expanded-image');
+          expandedImage.src = imageButton.dataset.imageUrl;
+          expandedImage.alt = imageButton.dataset.imageAlt || '';
+          document.querySelector('#image-caption').textContent = imageButton.dataset.imageCaption || '';
+          imageDialog.showModal();
+          return;
+        }
         const addButton = event.target.closest('[data-add-day]');
         if (addButton) return openStopForm(addButton.dataset.addDay);
         const editButton = event.target.closest('[data-edit-index]');
@@ -867,6 +969,15 @@
         } catch {
           setStatus('Could not reset this browser’s itinerary.');
         }
+      });
+
+      const imageDialog = document.querySelector('#image-dialog');
+      document.querySelector('#close-image').addEventListener('click', () => imageDialog.close());
+      imageDialog.addEventListener('click', event => {
+        if (event.target === imageDialog) imageDialog.close();
+      });
+      document.querySelector('#expanded-image').addEventListener('error', () => {
+        document.querySelector('#image-caption').textContent = 'This image could not be loaded. Check that the image URL is publicly accessible.';
       });
     }
 
