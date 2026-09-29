@@ -144,6 +144,8 @@
     .time span { margin-left: 3px; }
     .stop h3 { margin: 0 0 3px; font-size: 1rem; }
     .stop p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .map-link { display: inline-flex; align-items: center; min-height: 40px; margin-top: 7px; padding: 7px 10px; border: 1px solid #c6d4db; border-radius: 9px; color: #174c65; background: #edf4f7; font-size: .875rem; font-weight: 800; text-decoration: none; }
+    .map-link:hover, .map-link:focus-visible { outline: 3px solid rgba(52,100,128,.22); outline-offset: 2px; text-decoration: underline; }
     .stop-photo { display: block; width: 78px; height: 72px; position: relative; overflow: hidden; border-radius: 12px; background: #e5e5df; }
     button.stop-photo { padding: 0; border: 0; color: inherit; text-align: left; cursor: zoom-in; }
     .stop-photo img { width: 100%; height: 100%; display: block; object-fit: cover; }
@@ -403,6 +405,11 @@
             <input id="stop-image-url" name="imageUrl" type="url" maxlength="2048" placeholder="https://…" />
             <small class="stay-note">Use a direct public HTTPS image link. Tap the photo in the itinerary to enlarge it.</small>
           </div>
+          <div class="form-field full">
+            <label for="stop-map-url">Google Maps URL (optional)</label>
+            <input id="stop-map-url" name="mapUrl" type="url" maxlength="2048" placeholder="Paste a Google Maps share link" />
+            <small class="stay-note">On phones, the link can open the Maps app if installed; otherwise it opens Google Maps in a new tab.</small>
+          </div>
         </div>
         <div class="dialog-actions">
           <button class="plan-button" id="cancel-stop" type="button">Cancel</button>
@@ -593,6 +600,23 @@
       return parsed.href;
     }
 
+    function normalizeGoogleMapsUrl(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      if (raw.length > 2048) throw new Error('Google Maps URL must be 2,048 characters or fewer.');
+      let parsed;
+      try { parsed = new URL(raw); } catch { throw new Error('Enter a complete Google Maps URL beginning with https://.'); }
+      const host = parsed.hostname.toLowerCase();
+      const googleDomain = /^(?:(?:www|maps)\.)?google\.(?:com|[a-z]{2,3})(?:\.[a-z]{2})?$/.test(host);
+      const isMapsLink = host === 'maps.app.goo.gl' ||
+        (host === 'goo.gl' && /^\/maps(?:\/|$)/i.test(parsed.pathname)) ||
+        (googleDomain && (host.startsWith('maps.') || /^\/maps(?:\/|$)/i.test(parsed.pathname)));
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password || !isMapsLink) {
+        throw new Error('Use a Google Maps share link from maps.google.com, google.com/maps, or maps.app.goo.gl.');
+      }
+      return parsed.href;
+    }
+
     function normalizePlan(candidate) {
       if (!Array.isArray(candidate) || candidate.length !== defaultDays.length) throw new Error('This file does not contain all expected trip dates.');
       const byKey = new Map(candidate.map(day => [day?.key, day]));
@@ -601,7 +625,7 @@
         const supplied = byKey.get(template.key);
         if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
         const stops = supplied.stops.map(stop => {
-          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 6 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
+          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 7 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
             throw new Error('A stop in the draft has an invalid format.');
           }
           const time = stop[0].trim();
@@ -610,8 +634,13 @@
           const tags = stop[4].filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
           if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
           if (stop[5] != null && typeof stop[5] !== 'string') throw new Error('A stop image URL must be text.');
+          if (stop[6] != null && typeof stop[6] !== 'string') throw new Error('A stop Google Maps URL must be text.');
           const imageUrl = normalizeImageUrl(stop[5]);
-          return imageUrl ? [time, name, note, stop[3], tags, imageUrl] : [time, name, note, stop[3], tags];
+          const mapUrl = normalizeGoogleMapsUrl(stop[6]);
+          const normalized = [time, name, note, stop[3], tags];
+          if (imageUrl || mapUrl) normalized.push(imageUrl);
+          if (mapUrl) normalized.push(mapUrl);
+          return normalized;
         });
         return { key: template.key, date: template.date, area: template.area, stops };
       });
@@ -719,6 +748,9 @@
             const hasPhoto = Boolean(stopPhotos[stop[1]] || stop[5]);
             const category = categories[stop[3]];
             const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
+            const mapLink = stop[6]
+              ? '<a class="map-link" href="' + escapeHtml(stop[6]) + '" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>'
+              : '';
             const actions = editMode
               ? '<div class="stop-actions">' +
                 '<button class="stop-action" type="button" data-edit-day="' + escapeHtml(day.key) + '" data-edit-index="' + index + '">Edit</button>' +
@@ -730,7 +762,7 @@
             return '<div class="stop ' + (hasPhoto ? 'with-photo' : '') + '">' +
               '<div class="time">' + safeTime + '</div>' +
               renderStopPhoto(stop) +
-              '<div class="stop-copy"><h3>' + escapeHtml(stop[1]) + '</h3><p>' + escapeHtml(stop[2]) + '</p></div>' +
+              '<div class="stop-copy"><h3>' + escapeHtml(stop[1]) + '</h3><p>' + escapeHtml(stop[2]) + '</p>' + mapLink + '</div>' +
               '<div class="stop-meta"><span class="activity-badge ' + category.className + '"><span class="activity-icon" aria-hidden="true">' + category.icon + '</span>' + category.label + '</span>' +
               '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + escapeHtml(tag) + '</span>').join('') + '</div>' + actions + '</div>' +
               '</div>';
@@ -807,6 +839,7 @@
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
       document.querySelector('#stop-image-url').value = stop?.[5] || '';
+      document.querySelector('#stop-map-url').value = stop?.[6] || '';
       categorySelect.value = stop?.[3] || 'food';
       stopDialog.showModal();
       document.querySelector('#stop-time').focus();
@@ -842,7 +875,9 @@
       document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? defaultDays[0].key : activeDay));
       document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
       const imageUrlField = document.querySelector('#stop-image-url');
+      const mapUrlField = document.querySelector('#stop-map-url');
       imageUrlField.addEventListener('input', () => imageUrlField.setCustomValidity(''));
+      mapUrlField.addEventListener('input', () => mapUrlField.setCustomValidity(''));
       stopForm.addEventListener('submit', event => {
         event.preventDefault();
         const form = new FormData(stopForm);
@@ -858,8 +893,18 @@
           imageUrlField.reportValidity();
           return;
         }
+        let mapUrl;
+        try {
+          mapUrl = normalizeGoogleMapsUrl(String(form.get('mapUrl') || ''));
+          mapUrlField.setCustomValidity('');
+        } catch (error) {
+          mapUrlField.setCustomValidity(error instanceof Error ? error.message : 'Enter a Google Maps share link.');
+          mapUrlField.reportValidity();
+          return;
+        }
         const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), String(form.get('category')), []];
-        if (imageUrl) stop.push(imageUrl);
+        if (imageUrl || mapUrl) stop.push(imageUrl);
+        if (mapUrl) stop.push(mapUrl);
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
           if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
