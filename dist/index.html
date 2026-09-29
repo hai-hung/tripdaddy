@@ -63,9 +63,20 @@
     .hero-label span { opacity: .82; font-size: .85rem; }
 
     .toolbar { display: flex; align-items: center; gap: 9px; overflow-x: auto; padding: 8px 2px 18px; scrollbar-width: none; }
+    .controls { padding: 14px 16px 2px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
+    .filter-group { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 12px; }
+    .filter-group + .filter-group { border-top: 1px solid #e9e5dc; }
+    .filter-label { margin: 0; color: var(--muted); font-size: .78rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .toolbar.day-filters { padding: 8px 0 12px; }
+    .toolbar.type-filters { flex-wrap: wrap; overflow: visible; padding: 8px 0 12px; }
     .filter { border: 1px solid var(--line); color: var(--ink); background: var(--card); padding: 9px 14px; border-radius: 999px; white-space: nowrap; cursor: pointer; font-weight: 700; font-size: .88rem; }
     .filter:hover, .filter:focus-visible { border-color: var(--ink); outline: none; }
     .filter.active { color: white; background: var(--ink); border-color: var(--ink); }
+    .filter[data-category="food"].active { background: #a93826; border-color: #a93826; }
+    .filter[data-category="shopping"].active { background: #6b4aa1; border-color: #6b4aa1; }
+    .filter[data-category="fun"].active { background: #16735c; border-color: #16735c; }
+    .filter[data-category="culture"].active { background: #a26411; border-color: #a26411; }
+    .filter[data-category="travel"].active { background: #346480; border-color: #346480; }
 
     .layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
     .timeline { display: grid; gap: 18px; }
@@ -74,16 +85,23 @@
     .day-head h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
     .day-head span { color: #d5e0e9; font-size: .85rem; }
     .stops { padding: 6px 20px 12px; }
-    .stop { display: grid; grid-template-columns: 84px 1fr auto; gap: 15px; padding: 15px 0; border-bottom: 1px solid #e9e5dc; align-items: start; }
+    .stop { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 15px; padding: 15px 0; border-bottom: 1px solid #e9e5dc; align-items: start; }
     .stop:last-child { border-bottom: 0; }
     .time { font-weight: 850; color: var(--red); font-variant-numeric: tabular-nums; }
     .stop h3 { margin: 0 0 3px; font-size: 1rem; }
     .stop p { margin: 0; color: var(--muted); font-size: .86rem; }
     .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; max-width: 190px; }
     .chip { padding: 5px 8px; border-radius: 999px; background: #eef2f4; color: var(--ink-2); font-size: .72rem; font-weight: 800; }
-    .chip.food { background: #f8e4dc; color: #8b321f; }
     .chip.book { background: #fff0bc; color: #695000; }
     .chip.new { background: var(--mint); color: #1f5143; }
+    .activity-badge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 11px; font-size: .8rem; line-height: 1.2; font-weight: 850; white-space: nowrap; }
+    .activity-badge .activity-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; color: white; background: currentColor; font-size: .75rem; }
+    .activity-food { --badge-ink: #963522; color: #963522; background: #f9e2d9; }
+    .activity-shopping { --badge-ink: #674b94; color: #674b94; background: #eee6f7; }
+    .activity-fun { --badge-ink: #17664f; color: #17664f; background: #dcefe8; }
+    .activity-culture { --badge-ink: #8c5a15; color: #8c5a15; background: #f5ebd4; }
+    .activity-travel { --badge-ink: #345d75; color: #345d75; background: #e0edf3; }
+    .activity-badge .activity-icon { color: white; background: var(--badge-ink); }
 
     aside { position: sticky; top: 88px; display: grid; gap: 16px; }
     .panel { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; }
@@ -133,8 +151,11 @@
       .layout { gap: 16px; }
       .day-head { display: block; padding: 15px 16px; }
       .stops { padding: 4px 16px 10px; }
-      .stop { grid-template-columns: 72px 1fr; gap: 10px; }
-      .chips { grid-column: 2; justify-content: flex-start; max-width: none; }
+      .filter-group { grid-template-columns: 1fr; gap: 0; }
+      .filter-group + .filter-group { padding-top: 4px; }
+      .toolbar.day-filters, .toolbar.type-filters { padding: 7px 0 10px; }
+      .stop { grid-template-columns: 72px minmax(0, 1fr); gap: 10px; }
+      .chips, .activity-badge { grid-column: 2; justify-content: flex-start; max-width: none; width: fit-content; }
       aside { grid-template-columns: 1fr; }
       .food-grid { grid-template-columns: 1fr; }
       .section-title { display: block; }
@@ -155,7 +176,7 @@
       <div class="intro-copy">
         <div class="eyebrow">Tokyo food itinerary</div>
         <h1 id="page-title">Eat well.<br />Waste no train rides.</h1>
-        <p class="dek">Seven Tokyo days arranged by neighbourhood, with one clear food plan for each meal and room for the city in between.</p>
+        <p class="dek">Seven Tokyo days arranged by neighbourhood. Every stop is labeled by purpose: food, shopping, attractions, temple visits or travel.</p>
         <div class="quick-stats" aria-label="Trip summary">
           <div class="stat"><b>7</b><span>Tokyo days</span></div>
           <div class="stat"><b>5</b><span>priority bookings</span></div>
@@ -168,7 +189,10 @@
       </figure>
     </section>
 
-    <nav class="toolbar" aria-label="Filter itinerary by date" id="filters"></nav>
+    <section class="controls" aria-label="Filter itinerary">
+      <div class="filter-group"><h2 class="filter-label">Choose day</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
+      <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
+    </section>
 
     <div class="layout">
       <section class="timeline" id="timeline" aria-live="polite"></section>
@@ -211,52 +235,70 @@
   </main>
 
   <script>
+    const categories = {
+      food: { label: 'Food', icon: '食', className: 'activity-food' },
+      shopping: { label: 'Shopping', icon: '買', className: 'activity-shopping' },
+      fun: { label: 'Attraction / Fun', icon: '遊', className: 'activity-fun' },
+      culture: { label: 'Temple / Culture', icon: '寺', className: 'activity-culture' },
+      travel: { label: 'Travel', icon: '移', className: 'activity-travel' }
+    };
+
     const days = [
       { key: 'nov6', date: 'Fri · Nov 6', area: 'Sumida & Kinshicho', stops: [
-        ['1:35 PM', 'Arrive Haneda and check in', 'Allow immigration, baggage and 60–75 minutes into the city.', ['Travel']],
-        ['5:00 PM', 'Tokyo Skytree & Solamachi', 'A gentle first look at Tokyo close to the hotel.', ['Sightseeing']],
-        ['7:15 PM', 'Sekai no Yamachan · Kinshicho', 'Arrival-night izakaya and chicken wings.', ['Food', 'Picture 2', 'Book']]
+        ['1:35 PM', 'Arrive Haneda and check in', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
+        ['5:00 PM', 'Tokyo Skytree observation deck', 'A first city view close to the hotel.', 'fun', ['Book']],
+        ['6:15 PM', 'Tokyo Solamachi', 'Shopping and browsing beneath the Skytree.', 'shopping', []],
+        ['7:15 PM', 'Sekai no Yamachan · Kinshicho', 'Arrival-night izakaya and chicken wings.', 'food', ['Picture 2', 'Book']]
       ]},
       { key: 'nov7', date: 'Sat · Nov 7', area: 'Kuramae, Asakusabashi & Asakusa', stops: [
-        ['10:00 AM', 'Leaves Coffee Roasters', 'Start at the Sumida roastery.', ['Coffee']],
-        ['11:30 AM', 'Motenashi Kuroki', 'Saturday lunch service; do not rely on evening hours.', ['Ramen']],
-        ['1:15 PM', 'Asakusa walking route', 'Kaminarimon, Nakamise, Senso-ji and the Sumida River.', ['Sightseeing']],
-        ['6:00 PM', 'Flexible light dinner', 'Stay near Asakusa or the hotel.', ['Flexible']]
+        ['10:00 AM', 'Leaves Coffee Roasters', 'Coffee stop in the Sumida area.', 'food', []],
+        ['11:30 AM', 'Motenashi Kuroki', 'Ramen lunch. Saturday service ends at 3:00 PM.', 'food', []],
+        ['1:15 PM', 'Kaminarimon Gate', 'Enter the historic Asakusa district.', 'fun', []],
+        ['1:45 PM', 'Nakamise Shopping Street', 'Browse the traditional market street and souvenirs.', 'shopping', []],
+        ['3:00 PM', 'Senso-ji Temple', 'Visit Tokyo’s best-known Buddhist temple.', 'culture', []],
+        ['4:15 PM', 'Sumida River walk', 'Take a relaxed riverside stroll.', 'fun', []],
+        ['6:00 PM', 'Flexible light dinner', 'Choose a nearby spot after the Asakusa walk.', 'food', []]
       ]},
       { key: 'nov10', date: 'Tue · Nov 10', area: 'Return to Ikebukuro', stops: [
-        ['Daytime', 'Hakone to Tokyo', 'Add Kamakura only with an early start and forwarded luggage.', ['Travel']],
-        ['7:30 PM', 'Izumo Ikebukuro', 'Unagi dinner near the Toshima hotel; consider sharing the large bowl.', ['Food', 'Book']]
+        ['Daytime', 'Hakone to Tokyo', 'Add Kamakura only with an early start and forwarded luggage.', 'travel', []],
+        ['7:30 PM', 'Izumo Ikebukuro', 'Unagi dinner near the Toshima hotel; consider sharing the large bowl.', 'food', ['Book']]
       ]},
       { key: 'nov11', date: 'Wed · Nov 11', area: 'Ikebukuro', stops: [
-        ['8:00 AM', 'Shinpachi Shokudo', 'Grilled-fish breakfast at the Ikebukuro West branch.', ['Breakfast']],
-        ['11:00 AM', 'Espresso D Works', 'Brunch beside the Sunshine City route.', ['Cafe']],
-        ['12:45 PM', 'Sunshine City & Ikebukuro', 'Pokemon Center, Gashapon, Animate and shopping.', ['Explore']],
-        ['5:30 PM', 'Kikanbo Ikebukuro', 'Spicy miso ramen before the main dinner queue.', ['Ramen']]
+        ['8:00 AM', 'Shinpachi Shokudo', 'Grilled-fish breakfast at the Ikebukuro West branch.', 'food', []],
+        ['11:00 AM', 'Espresso D Works', 'Cafe brunch beside Sunshine City.', 'food', []],
+        ['12:45 PM', 'Sunshine City', 'Shopping at the mall, Pokemon Center and Animate.', 'shopping', []],
+        ['3:30 PM', 'Gashapon Department Store', 'Browse capsule toys and try the machines.', 'fun', []],
+        ['5:30 PM', 'Kikanbo Ikebukuro', 'Spicy miso ramen before the main dinner queue.', 'food', []]
       ]},
       { key: 'nov12', date: 'Thu · Nov 12', area: 'Toyosu, Marunouchi & Ginza', stops: [
-        ['9:00 AM', 'teamLab Planets', 'Timed admission; allow about 90–105 minutes.', ['New', 'Book']],
-        ['11:45 AM', 'Nemuro Hanamaru · KITTE', 'The replacement for the closed Ginza branch.', ['Sushi']],
-        ['1:30 PM', 'Ginza shopping', 'Walk south through Yurakucho and Ginza.', ['Shopping']],
-        ['3:30 PM', 'Oosumi Tamaya', 'A small fruit-daifuku break.', ['Sweet']],
-        ['5:30 PM', 'Tempura Abe Ginza', 'The anchor dinner for Ginza day.', ['Tempura', 'Book']]
+        ['9:00 AM', 'teamLab Planets', 'Timed entry to the immersive art museum. Allow 90–105 minutes.', 'fun', ['New', 'Book']],
+        ['11:45 AM', 'Nemuro Hanamaru · KITTE', 'Sushi lunch at the Marunouchi branch.', 'food', []],
+        ['1:30 PM', 'Ginza & Yurakucho', 'Shopping and department-store browsing.', 'shopping', []],
+        ['3:30 PM', 'Oosumi Tamaya', 'Fruit daifuku snack in Ginza.', 'food', []],
+        ['4:00 PM', 'More Ginza shopping', 'Continue browsing before dinner.', 'shopping', []],
+        ['5:30 PM', 'Tempura Abe Ginza', 'Tempura dinner; reserve ahead.', 'food', ['Book']]
       ]},
       { key: 'nov13', date: 'Fri · Nov 13', area: 'Shibuya', stops: [
-        ['8:30 AM', 'Komeraku', 'Chameshi and ochazuke from the second sheet.', ['Food', 'Picture 2']],
-        ['10:00 AM', 'Shibuya shopping', 'Scramble Crossing and the station district.', ['Explore']],
-        ['11:30 AM', 'Hikiniku to Come', 'Online registration only.', ['Hamburg rice', 'Book']],
-        ['2:30 PM', 'Kuro Mame or Acid Coffee', 'Pick whichever is closest to the shopping route.', ['Coffee']],
-        ['6:30 PM', 'Moheji · Scramble Square', 'Monjayaki dinner directly above the station.', ['Food']]
+        ['8:30 AM', 'Komeraku', 'Chameshi and ochazuke breakfast.', 'food', ['Picture 2']],
+        ['10:00 AM', 'Shibuya shops', 'Browse around the station and Scramble Crossing.', 'shopping', []],
+        ['10:45 AM', 'Scramble Crossing', 'See the famous crossing from the street or an upper floor.', 'fun', []],
+        ['11:30 AM', 'Hikiniku to Come', 'Hamburg rice lunch. Online registration only.', 'food', ['Book']],
+        ['2:30 PM', 'Kuro Mame or Acid Coffee', 'Choose the cafe closest to the shopping route.', 'food', []],
+        ['4:30 PM', 'Optional Shibuya Sky', 'Rooftop city views; book a timed slot if interested.', 'fun', ['Optional', 'Book']],
+        ['6:30 PM', 'Moheji · Scramble Square', 'Monjayaki dinner directly above the station.', 'food', []]
       ]},
       { key: 'nov14', date: 'Sat · Nov 14', area: 'Harajuku, Omotesando & Akasaka', stops: [
-        ['10:00 AM', 'mipig cafe Harajuku', 'Reserve ahead and arrive 10 minutes early.', ['New', 'Book']],
-        ['11:10 AM', "AMAM DACOTAN / I’m donut?", 'Use mobile ordering if offered.', ['Bakery']],
-        ['12:00 PM', 'Tonkatsu Maisen Aoyama', 'Arrive close to opening to reduce the queue.', ['Tonkatsu']],
-        ['1:45 PM', 'Cat Street & Omotesando', 'A single walkable shopping corridor.', ['Shopping']],
-        ['4:00 PM', 'Jean-Paul Hévin', 'A chocolate drink in Omotesando Hills.', ['Food', 'Picture 2']],
-        ['7:00 PM', 'SABASU · Akasaka', 'Reserved sourdough-pizza dinner.', ['Pizza', 'Book']]
+        ['10:00 AM', 'mipig cafe Harajuku', 'Micro-pig visit. Reserve ahead and arrive 10 minutes early.', 'fun', ['New', 'Book']],
+        ['11:10 AM', 'AMAM DACOTAN / I’m donut?', 'Bakery and doughnut stop. Use mobile ordering if offered.', 'food', []],
+        ['12:00 PM', 'Tonkatsu Maisen Aoyama', 'Tonkatsu lunch. Arrive close to opening to reduce the queue.', 'food', []],
+        ['1:45 PM', 'Cat Street & Omotesando', 'Walk and shop along this corridor.', 'shopping', []],
+        ['4:00 PM', 'Jean-Paul Hévin', 'Chocolate drink break in Omotesando Hills.', 'food', ['Picture 2']],
+        ['5:00 PM', 'Travel to Akasaka', 'Allow time to get to dinner.', 'travel', []],
+        ['7:00 PM', 'SABASU · Akasaka', 'Reserved sourdough-pizza dinner.', 'food', ['Book']]
       ]},
       { key: 'nov15', date: 'Sun · Nov 15', area: 'Departure', stops: [
-        ['7:00 AM', 'Leave for Haneda', 'Breakfast near the hotel, then transfer for the 10:45 flight.', ['Travel']]
+        ['7:00 AM', 'Breakfast near the hotel', 'Eat before heading to the airport.', 'food', []],
+        ['8:00 AM', 'Leave for Haneda', 'Airport transfer for the 10:45 flight.', 'travel', []]
       ]}
     ];
 
@@ -270,38 +312,59 @@
 
     const timeline = document.querySelector('#timeline');
     const filters = document.querySelector('#filters');
+    const typeFilters = document.querySelector('#type-filters');
     const bookingList = document.querySelector('#booking-list');
+    let activeDay = 'all';
+    let activeCategory = 'all';
 
     function chipClass(label) {
-      if (['Food','Ramen','Sushi','Sweet','Tempura','Pizza','Tonkatsu','Hamburg rice','Breakfast','Cafe','Coffee','Bakery'].includes(label)) return 'food';
       if (label === 'Book') return 'book';
       if (label === 'New' || label === 'Picture 2') return 'new';
       return '';
     }
 
-    function renderDays(selected = 'all') {
-      timeline.innerHTML = days.filter(day => selected === 'all' || day.key === selected).map(day => `
+    function renderDays() {
+      timeline.innerHTML = days.filter(day => activeDay === 'all' || day.key === activeDay).map(day => {
+        const stops = day.stops.filter(stop => activeCategory === 'all' || stop[3] === activeCategory);
+        if (!stops.length) return '';
+        return `
         <article class="day">
           <div class="day-head"><h2>${day.date}</h2><span>${day.area}</span></div>
-          <div class="stops">${day.stops.map(stop => `
+          <div class="stops">${stops.map(stop => `
             <div class="stop">
               <div class="time">${stop[0]}</div>
               <div><h3>${stop[1]}</h3><p>${stop[2]}</p></div>
-              <div class="chips">${stop[3].map(tag => `<span class="chip ${chipClass(tag)}">${tag}</span>`).join('')}</div>
+              <span class="activity-badge ${categories[stop[3]].className}"><span class="activity-icon" aria-hidden="true">${categories[stop[3]].icon}</span>${categories[stop[3]].label}</span>
+              <div class="chips">${stop[4].map(tag => `<span class="chip ${chipClass(tag)}">${tag}</span>`).join('')}</div>
             </div>`).join('')}
           </div>
-        </article>`).join('');
+        </article>`;
+      }).join('');
     }
 
     function renderFilters() {
       const items = [['all','All Tokyo days'], ...days.map(day => [day.key, day.date.replace(' · ', ' ')])];
-      filters.innerHTML = items.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-key="${key}">${label}</button>`).join('');
+      filters.innerHTML = items.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-day="${key}" aria-pressed="${i === 0}">${label}</button>`).join('');
       filters.addEventListener('click', event => {
         const button = event.target.closest('button');
         if (!button) return;
         filters.querySelectorAll('button').forEach(item => item.classList.remove('active'));
         button.classList.add('active');
-        renderDays(button.dataset.key);
+        filters.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        activeDay = button.dataset.day;
+        renderDays();
+      });
+
+      const typeItems = [['all','All stops'], ...Object.entries(categories).map(([key, category]) => [key, category.label])];
+      typeFilters.innerHTML = typeItems.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-category="${key}" aria-pressed="${i === 0}">${label}</button>`).join('');
+      typeFilters.addEventListener('click', event => {
+        const button = event.target.closest('button');
+        if (!button) return;
+        typeFilters.querySelectorAll('button').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        typeFilters.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        activeCategory = button.dataset.category;
+        renderDays();
       });
     }
 
