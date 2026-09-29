@@ -100,16 +100,28 @@
     .image-dialog { width: min(1000px, calc(100% - 24px)); max-width: 1000px; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.2); border-radius: 18px; color: white; background: #0b1724; box-shadow: 0 24px 80px rgba(16,38,63,.4); }
     .image-dialog::backdrop { background: rgba(8,17,27,.82); backdrop-filter: blur(5px); }
     .image-view { position: relative; display: grid; min-height: 180px; place-items: center; padding: 18px 18px 0; }
+    .image-view.has-gallery { padding-right: 88px; padding-left: 88px; }
     .image-view img { display: block; max-width: 100%; max-height: min(78vh, 900px); object-fit: contain; border-radius: 8px; }
     .image-caption { margin: 0; padding: 12px 18px 16px; color: #d9e2e8; font-size: .9rem; }
     .image-close { position: absolute; top: 12px; right: 12px; z-index: 1; min-height: 44px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: white; background: rgba(11,23,36,.88); cursor: pointer; font-weight: 800; }
     .image-close:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .image-nav-button { position: absolute; top: 50%; z-index: 1; min-width: 66px; min-height: 44px; padding: 8px 10px; transform: translateY(-50%); border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: white; background: rgba(11,23,36,.88); cursor: pointer; font-size: .8rem; font-weight: 800; }
+    .image-nav-button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .image-nav-button[hidden] { display: none; }
+    .image-nav-button.previous { left: 12px; }
+    .image-nav-button.next { right: 12px; }
     .dialog-inner { padding: 22px; }
     .dialog-inner h2 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 1.6rem; }
     .dialog-hint { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
     .stop-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-field { display: grid; gap: 5px; }
     .form-field.full { grid-column: 1 / -1; }
+    .image-url-rows { display: grid; gap: 8px; }
+    .image-url-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; gap: 7px; align-items: center; }
+    .image-url-row input { min-width: 0; }
+    .image-row-button { min-width: 44px; min-height: 44px; padding: 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: white; cursor: pointer; font-size: 1.2rem; font-weight: 800; }
+    .image-row-button:focus-visible { outline: 3px solid rgba(211,166,43,.42); outline-offset: 2px; }
+    .image-row-button:disabled { opacity: .45; cursor: not-allowed; }
     .form-field label { font-size: .875rem; font-weight: 800; }
     .form-field input, .form-field select, .form-field textarea { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #b8b7b0; border-radius: 10px; color: var(--ink); background: white; }
     .form-field textarea { min-height: 92px; resize: vertical; }
@@ -147,7 +159,6 @@
     .stop-photo { display: block; width: 78px; height: 72px; position: relative; overflow: hidden; border-radius: 12px; background: #e5e5df; }
     button.stop-photo { padding: 0; border: 0; color: inherit; text-align: left; cursor: zoom-in; }
     .stop-photo img { width: 100%; height: 100%; display: block; object-fit: cover; }
-    .stop-photo span { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; border-radius: 5px; color: white; background: rgba(16,38,63,.86); font-size: .75rem; line-height: 1.2; font-weight: 850; letter-spacing: .02em; }
     .stop-photo:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
     .stop-meta { display: grid; justify-items: end; gap: 6px; }
     .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; max-width: 190px; }
@@ -259,6 +270,7 @@
       .accommodation td { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 10px; padding: 7px 0; border: 0; white-space: normal !important; }
       .accommodation td::before { content: attr(data-label); color: var(--muted); font-size: .8rem; font-weight: 850; text-transform: uppercase; }
       .image-view { padding: 54px 10px 0; }
+      .image-view.has-gallery { padding: 60px 68px 0; }
       .image-view img { max-height: 76vh; }
       .image-caption { padding: 11px 14px 14px; }
     }
@@ -397,9 +409,9 @@
             <select id="stop-category" name="category" required></select>
           </div>
           <div class="form-field full">
-            <label for="stop-image-url">Image URL (optional)</label>
-            <input id="stop-image-url" name="imageUrl" type="url" maxlength="2048" placeholder="https://…" />
-            <small class="stay-note">Use a direct public HTTPS image link. Tap the photo in the itinerary to enlarge it.</small>
+            <label for="stop-image-url-0">Image URLs (optional)</label>
+            <div class="image-url-rows" id="stop-image-url-rows"></div>
+            <small class="stay-note">Use direct public HTTPS image links. Tap the first photo in the itinerary to browse all images (up to 10).</small>
           </div>
           <div class="form-field full">
             <label for="stop-map-url">Google Maps URL (optional)</label>
@@ -428,9 +440,11 @@
   </dialog>
 
   <dialog class="image-dialog" id="image-dialog" aria-labelledby="image-caption">
-    <div class="image-view">
+    <div class="image-view" id="image-view">
       <button class="image-close" id="close-image" type="button">Close photo</button>
+      <button class="image-nav-button previous" id="previous-image" type="button" aria-label="Previous image" hidden>Previous</button>
       <img id="expanded-image" alt="" />
+      <button class="image-nav-button next" id="next-image" type="button" aria-label="Next image" hidden>Next</button>
     </div>
     <p class="image-caption" id="image-caption"></p>
   </dialog>
@@ -595,6 +609,19 @@
       return parsed.href;
     }
 
+    function normalizeImageUrls(value) {
+      const values = Array.isArray(value) ? value : value == null || value === '' ? [] : [value];
+      if (values.length > 10) throw new Error('A stop can have up to 10 images.');
+      if (values.some(item => typeof item !== 'string')) throw new Error('Image URLs must be text.');
+      return [...new Set(values.map(normalizeImageUrl).filter(Boolean))];
+    }
+
+    function stopImageUrls(stop) {
+      const value = stop?.[5];
+      if (Array.isArray(value)) return value.filter(url => typeof url === 'string' && url.trim());
+      return typeof value === 'string' && value.trim() ? [value] : [];
+    }
+
     function normalizeGoogleMapsUrl(value) {
       const raw = String(value || '').trim();
       if (!raw) return '';
@@ -629,12 +656,12 @@
           const note = stop[2].trim();
           const tags = stop[4].filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
           if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
-          if (stop[5] != null && typeof stop[5] !== 'string') throw new Error('A stop image URL must be text.');
+          if (stop[5] != null && typeof stop[5] !== 'string' && !Array.isArray(stop[5])) throw new Error('A stop image URL must be text or a list of URLs.');
           if (stop[6] != null && typeof stop[6] !== 'string') throw new Error('A stop Google Maps URL must be text.');
-          const imageUrl = normalizeImageUrl(stop[5]);
+          const imageUrls = normalizeImageUrls(stop[5]);
           const mapUrl = normalizeGoogleMapsUrl(stop[6]);
           const normalized = [time, name, note, categoryKey, tags];
-          if (imageUrl || mapUrl) normalized.push(imageUrl);
+          if (imageUrls.length || mapUrl) normalized.push(imageUrls);
           if (mapUrl) normalized.push(mapUrl);
           return normalized;
         });
@@ -681,6 +708,10 @@
     let editMode = false;
     let editedStop = null;
     let pendingImport = null;
+    let activeImageUrls = [];
+    let activeImageIndex = 0;
+    let activeImageTitle = '';
+    let activeImageAlt = '';
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
@@ -718,19 +749,41 @@
 
     function renderStopPhoto(stop) {
       const name = stop[1];
-      if (stop[5]) {
-        return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-url="' + escapeHtml(stop[5]) + '" data-image-alt="' + escapeHtml(name) + '" data-image-caption="Added image for ' + escapeHtml(name) + '" aria-label="Enlarge photo for ' + escapeHtml(name) + '">' +
-          '<img src="' + escapeHtml(stop[5]) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" />' +
-          '<span aria-hidden="true">ADDED</span></button>';
+      const imageUrls = stopImageUrls(stop);
+      if (imageUrls.length) {
+        return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-urls="' + escapeHtml(JSON.stringify(imageUrls)) + '" data-image-alt="' + escapeHtml(name) + '" data-image-title="' + escapeHtml(name) + '" aria-label="View ' + imageUrls.length + ' photo' + (imageUrls.length === 1 ? '' : 's') + ' for ' + escapeHtml(name) + '">' +
+          '<img src="' + escapeHtml(imageUrls[0]) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" />' +
+          '</button>';
       }
       const reference = stopPhotos[name];
       if (!reference) return '';
       const photo = photoLibrary[reference.id];
       const alt = reference.alt || photo.alt;
       const fullSize = photo.src.replace('width=480', 'width=1400');
-      return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-url="' + escapeHtml(fullSize) + '" data-image-alt="' + escapeHtml(alt) + '" data-image-caption="' + escapeHtml(name + ' · ' + alt) + '" aria-label="Enlarge photo for ' + escapeHtml(name) + '">' +
+      return '<button class="stop-photo" type="button" data-enlarge-image="true" data-image-urls="' + escapeHtml(JSON.stringify([fullSize])) + '" data-image-alt="' + escapeHtml(alt) + '" data-image-title="' + escapeHtml(name) + '" aria-label="View photo for ' + escapeHtml(name) + '">' +
         '<img src="' + escapeHtml(photo.src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" decoding="async" />' +
-        '<span aria-hidden="true">' + escapeHtml(reference.type) + '</span></button>';
+        '</button>';
+    }
+
+    function updateImageGallery() {
+      if (!activeImageUrls.length) return;
+      const imageView = document.querySelector('#image-view');
+      const image = document.querySelector('#expanded-image');
+      const multiple = activeImageUrls.length > 1;
+      imageView.classList.toggle('has-gallery', multiple);
+      document.querySelector('#previous-image').hidden = !multiple;
+      document.querySelector('#next-image').hidden = !multiple;
+      image.src = activeImageUrls[activeImageIndex];
+      image.alt = activeImageAlt;
+      document.querySelector('#image-caption').textContent = multiple
+        ? activeImageTitle + ' · ' + (activeImageIndex + 1) + ' of ' + activeImageUrls.length
+        : activeImageTitle;
+    }
+
+    function moveImageGallery(direction) {
+      if (activeImageUrls.length < 2) return;
+      activeImageIndex = (activeImageIndex + direction + activeImageUrls.length) % activeImageUrls.length;
+      updateImageGallery();
     }
 
     function renderDays() {
@@ -741,7 +794,7 @@
           '<div class="day-head"><h2>' + escapeHtml(day.date) + '</h2><div class="day-head-tools"><span>' + escapeHtml(day.area) + '</span>' +
             '<button class="day-add" type="button" data-add-day="' + escapeHtml(day.key) + '">Add stop</button></div></div>' +
           '<div class="stops">' + visibleStops.map(({ stop, index }) => {
-            const hasPhoto = Boolean(stopPhotos[stop[1]] || stop[5]);
+            const hasPhoto = Boolean(stopPhotos[stop[1]] || stopImageUrls(stop).length);
             const category = categories[stop[3]];
             const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
             const mapLink = stop[6]
@@ -834,7 +887,7 @@
       document.querySelector('#stop-time').value = stop?.[0] || '';
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
-      document.querySelector('#stop-image-url').value = stop?.[5] || '';
+      renderImageUrlRows(stopImageUrls(stop));
       document.querySelector('#stop-map-url').value = stop?.[6] || '';
       categorySelect.value = stop?.[3] || 'food';
       stopDialog.showModal();
@@ -850,6 +903,20 @@
 
     function countStops(plan) {
       return plan.reduce((total, day) => total + day.stops.length, 0);
+    }
+
+    function renderImageUrlRows(values) {
+      const imageUrlRows = document.querySelector('#stop-image-url-rows');
+      const urls = Array.isArray(values) ? values.slice(0, 10) : values ? [values] : [''];
+      const rows = urls.length ? urls : [''];
+      imageUrlRows.innerHTML = rows.map((url, index) =>
+        '<div class="image-url-row">' +
+          '<input id="stop-image-url-' + index + '" name="imageUrl" type="url" maxlength="2048" placeholder="https://…" aria-label="Image URL ' + (index + 1) + '" value="' + escapeHtml(url) + '" />' +
+          '<button class="image-row-button" type="button" data-image-action="add" data-image-index="' + index + '" aria-label="Add another image URL" title="Add another image URL">+</button>' +
+          '<button class="image-row-button" type="button" data-image-action="remove" data-image-index="' + index + '" aria-label="Remove image URL ' + (index + 1) + '" title="Remove this image URL"' + (rows.length === 1 ? ' disabled' : '') + '>−</button>' +
+        '</div>'
+      ).join('');
+      imageUrlRows.querySelectorAll('[data-image-action="add"]').forEach(button => { button.disabled = rows.length >= 10; });
     }
 
     function initializeEditor() {
@@ -870,9 +937,20 @@
 
       document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? defaultDays[0].key : activeDay));
       document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
-      const imageUrlField = document.querySelector('#stop-image-url');
+      const imageUrlRows = document.querySelector('#stop-image-url-rows');
       const mapUrlField = document.querySelector('#stop-map-url');
-      imageUrlField.addEventListener('input', () => imageUrlField.setCustomValidity(''));
+      imageUrlRows.addEventListener('input', event => event.target.setCustomValidity(''));
+      imageUrlRows.addEventListener('click', event => {
+        const button = event.target.closest('[data-image-action]');
+        if (!button) return;
+        const rows = [...imageUrlRows.querySelectorAll('input[name="imageUrl"]')].map(input => input.value);
+        const index = Number(button.dataset.imageIndex);
+        const action = button.dataset.imageAction;
+        if (action === 'add' && rows.length < 10) rows.splice(index + 1, 0, '');
+        if (action === 'remove' && rows.length > 1) rows.splice(index, 1);
+        renderImageUrlRows(rows);
+        if (action === 'add') imageUrlRows.querySelectorAll('input[name="imageUrl"]')[index + 1]?.focus();
+      });
       mapUrlField.addEventListener('input', () => mapUrlField.setCustomValidity(''));
       stopForm.addEventListener('submit', event => {
         event.preventDefault();
@@ -880,12 +958,13 @@
         const targetDayKey = String(form.get('day'));
         const targetDay = days.find(day => day.key === targetDayKey);
         if (!targetDay) return;
-        let imageUrl;
+        let imageUrls;
         try {
-          imageUrl = normalizeImageUrl(String(form.get('imageUrl') || ''));
-          imageUrlField.setCustomValidity('');
+          imageUrls = normalizeImageUrls(form.getAll('imageUrl').map(String));
+          imageUrlRows.querySelectorAll('input[name="imageUrl"]').forEach(input => input.setCustomValidity(''));
         } catch (error) {
-          imageUrlField.setCustomValidity(error instanceof Error ? error.message : 'Enter a direct HTTPS image URL.');
+          const imageUrlField = [...imageUrlRows.querySelectorAll('input[name="imageUrl"]')].find(input => input.value.trim()) || imageUrlRows.querySelector('input[name="imageUrl"]');
+          imageUrlField.setCustomValidity(error instanceof Error ? error.message : 'Enter direct HTTPS image URLs.');
           imageUrlField.reportValidity();
           return;
         }
@@ -899,7 +978,7 @@
           return;
         }
         const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), String(form.get('category')), []];
-        if (imageUrl || mapUrl) stop.push(imageUrl);
+        if (imageUrls.length || mapUrl) stop.push(imageUrls);
         if (mapUrl) stop.push(mapUrl);
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
@@ -921,10 +1000,16 @@
         const imageButton = event.target.closest('[data-enlarge-image]');
         if (imageButton) {
           const imageDialog = document.querySelector('#image-dialog');
-          const expandedImage = document.querySelector('#expanded-image');
-          expandedImage.src = imageButton.dataset.imageUrl;
-          expandedImage.alt = imageButton.dataset.imageAlt || '';
-          document.querySelector('#image-caption').textContent = imageButton.dataset.imageCaption || '';
+          try {
+            activeImageUrls = JSON.parse(imageButton.dataset.imageUrls || '[]');
+          } catch {
+            activeImageUrls = [];
+          }
+          if (!Array.isArray(activeImageUrls) || !activeImageUrls.length) return;
+          activeImageIndex = 0;
+          activeImageTitle = imageButton.dataset.imageTitle || '';
+          activeImageAlt = imageButton.dataset.imageAlt || '';
+          updateImageGallery();
           imageDialog.showModal();
           return;
         }
@@ -1014,6 +1099,8 @@
 
       const imageDialog = document.querySelector('#image-dialog');
       document.querySelector('#close-image').addEventListener('click', () => imageDialog.close());
+      document.querySelector('#previous-image').addEventListener('click', () => moveImageGallery(-1));
+      document.querySelector('#next-image').addEventListener('click', () => moveImageGallery(1));
       imageDialog.addEventListener('click', event => {
         if (event.target === imageDialog) imageDialog.close();
       });
