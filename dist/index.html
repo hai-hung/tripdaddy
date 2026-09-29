@@ -147,6 +147,7 @@
     .day-head h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
     .day-head span { color: #d5e0e9; font-size: .875rem; }
     .stops { padding: 6px 20px 12px; }
+    .day-empty { margin: 10px 0; color: var(--muted); }
     .stop { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 13px; padding: 15px 0; border-bottom: 1px solid #e9e5dc; align-items: center; }
     .stop.with-photo { grid-template-columns: 68px 78px minmax(0, 1fr) auto; }
     .stop:last-child { border-bottom: 0; }
@@ -329,13 +330,14 @@
           <p class="plan-save-note" id="save-status" role="status" aria-live="polite">Your plan edits save only in this browser.</p>
         </div>
         <div class="plan-tools-actions" id="edit-tools" hidden>
+          <button class="plan-button" id="add-day" type="button">Add day</button>
           <button class="plan-button" id="add-stop" type="button">Add stop</button>
           <button class="plan-button" id="export-plan" type="button">Export draft</button>
           <button class="plan-button" id="import-plan" type="button">Import draft</button>
           <button class="plan-button danger" id="reset-plan" type="button">Reset local edits</button>
           <input id="import-file" type="file" accept="application/json,.json" hidden />
         </div>
-        <p class="plan-instructions" id="edit-instructions" hidden>Edit or remove stops, add new ones, then export a JSON draft to share. Importing replaces only the plan saved in this browser; it does not change the public itinerary.</p>
+        <p class="plan-instructions" id="edit-instructions" hidden>Add any day, then add, edit or remove stops. Changes stay in this browser; export a JSON draft to share them.</p>
       </div>
     </section>
 
@@ -381,6 +383,29 @@
       <details class="photo-credits"><summary>Photo credits and licenses</summary><ul id="photo-credit-list"></ul></details>
     </footer>
   </main>
+
+  <dialog class="edit-dialog" id="day-dialog" aria-labelledby="day-dialog-title">
+    <div class="dialog-inner">
+      <h2 id="day-dialog-title">Add a day</h2>
+      <p class="dialog-hint">Use any date or label, then add stops to the new day.</p>
+      <form id="day-form">
+        <div class="stop-form-grid">
+          <div class="form-field full">
+            <label for="day-label">Day / date</label>
+            <input id="day-label" name="date" type="text" maxlength="100" placeholder="e.g. Mon · Nov 16" required />
+          </div>
+          <div class="form-field full">
+            <label for="day-area">Area / neighbourhood (optional)</label>
+            <input id="day-area" name="area" type="text" maxlength="160" placeholder="e.g. Shinjuku" />
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="plan-button" id="cancel-day" type="button">Cancel</button>
+          <button class="plan-button primary" type="submit">Add day</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
 
   <dialog class="edit-dialog" id="stop-dialog" aria-labelledby="stop-dialog-title">
     <div class="dialog-inner">
@@ -538,20 +563,12 @@
 
     const defaultDays = [
       { key: 'nov6', date: 'Fri · Nov 6', area: 'Sumida & Kinshicho', stops: [
-        ['1:35 PM', 'Arrive Tokyo Haneda Airport', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
-        ['3:00PM', 'Check in Hotel - Yoshii House', '5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)', 'travel', [], 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=', 'https://maps.app.goo.gl/kWKcrPnEj1jzReHL6'],
-        ['5:00 PM', 'Tokyo Skytree observation deck', 'A first city view close to the hotel.', 'fun', ['Book']],
-        ['6:15 PM', 'Tokyo Solamachi', 'Shopping and browsing beneath the Skytree.', 'fun', []],
-        ['7:15 PM', 'Sekai no Yamachan · Kinshicho', 'Arrival-night izakaya and chicken wings.', 'food', ['Picture 2', 'Book']]
+        ['1:35 PM', 'Arrive Tokyo Hanada Airport', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
+        ['3:00PM', 'Check in Hotel - Yoshii House', '5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)', 'travel', [], ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606007.jpg?k=0db1e9c68e7091da02f4196a98bcd0d21d16256b7b17611c9c343032cdde1019&o='], 'https://maps.app.goo.gl/kWKcrPnEj1jzReHL6']
       ]},
       { key: 'nov7', date: 'Sat · Nov 7', area: 'Kuramae, Asakusabashi & Asakusa', stops: [
-        ['10:00 AM', 'Leaves Coffee Roasters', 'Coffee stop in the Sumida area.', 'food', []],
-        ['11:30 AM', 'Motenashi Kuroki', 'Ramen lunch. Saturday service ends at 3:00 PM.', 'food', []],
-        ['1:15 PM', 'Kaminarimon Gate', 'Enter the historic Asakusa district.', 'fun', []],
-        ['1:45 PM', 'Nakamise Shopping Street', 'Browse the traditional market street and souvenirs.', 'fun', []],
-        ['3:00 PM', 'Senso-ji Temple', 'Visit Tokyo’s best-known Buddhist temple.', 'fun', []],
-        ['4:15 PM', 'Sumida River walk', 'Take a relaxed riverside stroll.', 'fun', []],
-        ['6:00 PM', 'Flexible light dinner', 'Choose a nearby spot after the Asakusa walk.', 'food', []]
+        ['10:00 AM', 'Leaves Coffee Roasters', '[Coffee] Former professional boxer Yasuo Ishii is the representative and roaster of the cafe.', 'food', [], ['https://cdn.shopify.com/s/files/1/0574/3286/6889/files/location-roasters_743d4c16-cddc-46c2-9825-f3328a42abe2.jpg?v=1765885895', 'https://cdn.shopify.com/s/files/1/0574/3286/6889/files/textpage-aboutus2-2025.jpg?v=1765721520'], 'https://maps.app.goo.gl/xuqsxetaHEdu2hjn6'],
+        ['11:30 AM', 'Motenashi Kuroki', '[Ramen] 4.2 star - 2,125 Google reviews', 'food', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmlrypVlOWGvDed-vyw8iBGuWJB9rLLNF1GR-vWaMUP0VA9tkAi24S1_WbwUbwUBe4W826n4iMfE3oBQNoVlx0n5u7pD0PW_RyVC46qHrrg9vZJ-GnkROgFPg6SRElIIJyG9603I0Z78Mo=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm8rrSosG4v7gUGBq7Qmkst8cf130mVDG7GNZK0LZVVEoGVenbMAcS4X68ZHXsA9sPprsb8fbrB7SPlp60FUN0W1ubfdroeISPpkzmD2L6zDxWxbdCILhDpcMX_ZytCxS_QfLVk=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmOa4PMhWum-kup71yrsOI66h1DrEz-lZ77CvwuRSecVKpF2EQjQukr5NjnpMvFAtqbI9-i3FWRpTIzFpgwkMAKjSq1Hj2xI64zj1LNpeazEKQHW6xYnKRk18W7l1I5w6d2pHlK9OdWwBo4=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/SkwnzHiVvcLWbmqQ7']
       ]},
       { key: 'nov10', date: 'Tue · Nov 10', area: 'Return to Ikebukuro', stops: [
         ['Daytime', 'Hakone to Tokyo', 'Add Kamakura only with an early start and forwarded luggage.', 'travel', []],
@@ -640,11 +657,15 @@
     }
 
     function normalizePlan(candidate) {
-      if (!Array.isArray(candidate) || candidate.length !== defaultDays.length) throw new Error('This file does not contain all expected trip dates.');
-      const byKey = new Map(candidate.map(day => [day?.key, day]));
-      if (byKey.size !== defaultDays.length || defaultDays.some(day => !byKey.has(day.key))) throw new Error('The draft dates do not match this trip.');
-      return defaultDays.map(template => {
-        const supplied = byKey.get(template.key);
+      if (!Array.isArray(candidate) || !candidate.length || candidate.length > 100) throw new Error('A trip must contain between 1 and 100 days.');
+      const seenKeys = new Set();
+      return candidate.map(supplied => {
+        if (!supplied || typeof supplied.key !== 'string' || typeof supplied.date !== 'string' || typeof (supplied.area ?? '') !== 'string') throw new Error('A trip day has invalid details.');
+        const key = supplied.key.trim();
+        const date = supplied.date.trim();
+        const area = String(supplied.area || '').trim();
+        if (!key || key.length > 100 || !date || date.length > 100 || area.length > 160 || seenKeys.has(key)) throw new Error('A trip day has missing, duplicate or overly long details.');
+        seenKeys.add(key);
         if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
         const stops = supplied.stops.map(stop => {
           const categoryKey = stop?.[3] === 'shopping' || stop?.[3] === 'culture' ? 'fun' : stop?.[3];
@@ -665,7 +686,7 @@
           if (mapUrl) normalized.push(mapUrl);
           return normalized;
         });
-        return { key: template.key, date: template.date, area: template.area, stops };
+        return { key, date, area, stops };
       });
     }
 
@@ -789,11 +810,12 @@
     function renderDays() {
       timeline.innerHTML = days.filter(day => activeDay === 'all' || day.key === activeDay).map(day => {
         const visibleStops = day.stops.map((stop, index) => ({ stop, index })).filter(({ stop }) => activeCategory === 'all' || stop[3] === activeCategory);
-        if (!visibleStops.length && !(editMode && activeCategory === 'all')) return '';
+        if (!visibleStops.length && activeCategory !== 'all') return '';
+        const emptyDayMessage = visibleStops.length ? '' : '<p class="day-empty">No stops planned yet.' + (editMode ? ' Add a stop to start this day.' : '') + '</p>';
         return '<article class="day">' +
           '<div class="day-head"><h2>' + escapeHtml(day.date) + '</h2><div class="day-head-tools"><span>' + escapeHtml(day.area) + '</span>' +
             '<button class="day-add" type="button" data-add-day="' + escapeHtml(day.key) + '">Add stop</button></div></div>' +
-          '<div class="stops">' + visibleStops.map(({ stop, index }) => {
+          '<div class="stops">' + emptyDayMessage + visibleStops.map(({ stop, index }) => {
             const hasPhoto = Boolean(stopPhotos[stop[1]] || stopImageUrls(stop).length);
             const category = categories[stop[3]];
             const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
@@ -820,21 +842,21 @@
     }
 
     function renderFilters() {
-      const items = [['all','All Tokyo days'], ...days.map(day => [day.key, day.date.replace(' · ', ' ')])];
+      const items = [['all','All days'], ...days.map(day => [day.key, day.date.replace(' · ', ' ')])];
       filters.innerHTML = items.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-day="${key}" aria-pressed="${i === 0}">${label}</button>`).join('');
-      filters.addEventListener('click', event => {
+      filters.onclick = event => {
         const button = event.target.closest('button');
         if (!button) return;
         setActiveDay(button.dataset.day);
-      });
+      };
 
       const typeItems = [['all','All stops'], ...Object.entries(categories).map(([key, category]) => [key, category.label])];
       typeFilters.innerHTML = typeItems.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-category="${key}" aria-pressed="${i === 0}">${label}</button>`).join('');
-      typeFilters.addEventListener('click', event => {
+      typeFilters.onclick = event => {
         const button = event.target.closest('button');
         if (!button) return;
         setActiveCategory(button.dataset.category);
-      });
+      };
     }
 
     function renderBookings() {
@@ -876,14 +898,14 @@
     function openStopForm(dayKey, stopIndex = null) {
       const daySelect = document.querySelector('#stop-day');
       const categorySelect = document.querySelector('#stop-category');
-      if (!daySelect.options.length) {
-        daySelect.innerHTML = defaultDays.map(day => '<option value="' + escapeHtml(day.key) + '">' + escapeHtml(day.date.replace(' · ', ' ')) + ' — ' + escapeHtml(day.area) + '</option>').join('');
+      daySelect.innerHTML = days.map(day => '<option value="' + escapeHtml(day.key) + '">' + escapeHtml(day.date.replace(' · ', ' ')) + (day.area ? ' — ' + escapeHtml(day.area) : '') + '</option>').join('');
+      if (!categorySelect.options.length) {
         categorySelect.innerHTML = Object.entries(categories).map(([key, category]) => '<option value="' + key + '">' + escapeHtml(category.label) + '</option>').join('');
       }
       editedStop = stopIndex === null ? null : { dayKey, stopIndex };
       const stop = stopIndex === null ? null : days.find(day => day.key === dayKey)?.stops[stopIndex];
       document.querySelector('#stop-dialog-title').textContent = stop ? 'Edit stop' : 'Add a stop';
-      daySelect.value = dayKey || defaultDays[0].key;
+      daySelect.value = dayKey || days[0]?.key || '';
       document.querySelector('#stop-time').value = stop?.[0] || '';
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
@@ -935,7 +957,41 @@
         renderDays();
       });
 
-      document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? defaultDays[0].key : activeDay));
+      const dayDialog = document.querySelector('#day-dialog');
+      const dayForm = document.querySelector('#day-form');
+      const dayLabelField = document.querySelector('#day-label');
+      dayLabelField.addEventListener('input', () => dayLabelField.setCustomValidity(''));
+      document.querySelector('#add-day').addEventListener('click', () => {
+        dayForm.reset();
+        dayDialog.showModal();
+        dayLabelField.focus();
+      });
+      document.querySelector('#cancel-day').addEventListener('click', () => dayDialog.close());
+      dayForm.addEventListener('submit', event => {
+        event.preventDefault();
+        if (days.length >= 100) {
+          setStatus('This itinerary supports up to 100 days.');
+          return;
+        }
+        const form = new FormData(dayForm);
+        const date = String(form.get('date') || '').trim();
+        const area = String(form.get('area') || '').trim();
+        if (days.some(day => day.date.toLocaleLowerCase() === date.toLocaleLowerCase())) {
+          dayLabelField.setCustomValidity('A day with this label already exists.');
+          dayLabelField.reportValidity();
+          return;
+        }
+        dayLabelField.setCustomValidity('');
+        let key;
+        do { key = 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+        while (days.some(day => day.key === key));
+        days.push({ key, date, area, stops: [] });
+        dayDialog.close();
+        renderFilters();
+        updatePlanAfterChange(key, 'Day added to this browser. Export JSON to share it.');
+      });
+
+      document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? days[0].key : activeDay));
       document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
       const imageUrlRows = document.querySelector('#stop-image-url-rows');
       const mapUrlField = document.querySelector('#stop-map-url');
@@ -1078,6 +1134,7 @@
         pendingImport = null;
         importDialog.close();
         setActiveCategory('all');
+        renderFilters();
         setActiveDay('all');
         const saved = savePlan();
         renderDays();
@@ -1090,6 +1147,7 @@
           localStorage.removeItem(PLAN_STORAGE_KEY);
           days = JSON.parse(JSON.stringify(defaultDays));
           setActiveCategory('all');
+          renderFilters();
           setActiveDay('all');
           setStatus('Original itinerary restored in this browser.');
         } catch {
