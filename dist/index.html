@@ -125,9 +125,7 @@
     .filter:hover, .filter:focus-visible { border-color: var(--ink); outline: none; }
     .filter.active { color: white; background: var(--ink); border-color: var(--ink); }
     .filter[data-category="food"].active { background: #a93826; border-color: #a93826; }
-    .filter[data-category="shopping"].active { background: #6b4aa1; border-color: #6b4aa1; }
     .filter[data-category="fun"].active { background: #16735c; border-color: #16735c; }
-    .filter[data-category="culture"].active { background: #a26411; border-color: #a26411; }
     .filter[data-category="travel"].active { background: #346480; border-color: #346480; }
 
     .layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
@@ -159,9 +157,7 @@
     .activity-badge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 11px; font-size: .875rem; line-height: 1.2; font-weight: 850; white-space: nowrap; }
     .activity-badge .activity-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; color: white; background: currentColor; font-size: .75rem; }
     .activity-food { --badge-ink: #963522; color: #963522; background: #f9e2d9; }
-    .activity-shopping { --badge-ink: #674b94; color: #674b94; background: #eee6f7; }
-    .activity-fun { --badge-ink: #17664f; color: #17664f; background: #dcefe8; }
-    .activity-culture { --badge-ink: #8c5a15; color: #8c5a15; background: #f5ebd4; }
+    .activity-attraction { --badge-ink: #17664f; color: #17664f; background: #dcefe8; }
     .activity-travel { --badge-ink: #345d75; color: #345d75; background: #e0edf3; }
     .activity-badge .activity-icon { color: white; background: var(--badge-ink); }
 
@@ -281,7 +277,7 @@
       <div class="intro-copy">
         <div class="eyebrow">Tokyo food itinerary</div>
         <h1 id="page-title">Eat well.<br />Waste no train rides.</h1>
-        <p class="dek">Seven Tokyo days arranged by neighbourhood. Every stop is labeled by purpose: food, shopping, attractions, temple visits or travel.</p>
+        <p class="dek">Tokyo days arranged by neighbourhood. Every stop is labeled as food, attraction or travel.</p>
         <div class="quick-stats" aria-label="Trip summary">
           <div class="stat"><b>7</b><span>Tokyo days</span></div>
           <div class="stat"><b>5</b><span>priority bookings</span></div>
@@ -442,9 +438,7 @@
   <script>
     const categories = {
       food: { label: 'Food', icon: '食', className: 'activity-food' },
-      shopping: { label: 'Shopping', icon: '買', className: 'activity-shopping' },
-      fun: { label: 'Attraction / Fun', icon: '遊', className: 'activity-fun' },
-      culture: { label: 'Temple / Culture', icon: '寺', className: 'activity-culture' },
+      fun: { label: 'Attraction', icon: '遊', className: 'activity-attraction' },
       travel: { label: 'Travel', icon: '移', className: 'activity-travel' }
     };
 
@@ -533,15 +527,15 @@
         ['1:35 PM', 'Arrive Tokyo Haneda Airport', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
         ['3:00PM', 'Check in Hotel - Yoshii House', '5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)', 'travel', [], 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=', 'https://maps.app.goo.gl/kWKcrPnEj1jzReHL6'],
         ['5:00 PM', 'Tokyo Skytree observation deck', 'A first city view close to the hotel.', 'fun', ['Book']],
-        ['6:15 PM', 'Tokyo Solamachi', 'Shopping and browsing beneath the Skytree.', 'shopping', []],
+        ['6:15 PM', 'Tokyo Solamachi', 'Shopping and browsing beneath the Skytree.', 'fun', []],
         ['7:15 PM', 'Sekai no Yamachan · Kinshicho', 'Arrival-night izakaya and chicken wings.', 'food', ['Picture 2', 'Book']]
       ]},
       { key: 'nov7', date: 'Sat · Nov 7', area: 'Kuramae, Asakusabashi & Asakusa', stops: [
         ['10:00 AM', 'Leaves Coffee Roasters', 'Coffee stop in the Sumida area.', 'food', []],
         ['11:30 AM', 'Motenashi Kuroki', 'Ramen lunch. Saturday service ends at 3:00 PM.', 'food', []],
         ['1:15 PM', 'Kaminarimon Gate', 'Enter the historic Asakusa district.', 'fun', []],
-        ['1:45 PM', 'Nakamise Shopping Street', 'Browse the traditional market street and souvenirs.', 'shopping', []],
-        ['3:00 PM', 'Senso-ji Temple', 'Visit Tokyo’s best-known Buddhist temple.', 'culture', []],
+        ['1:45 PM', 'Nakamise Shopping Street', 'Browse the traditional market street and souvenirs.', 'fun', []],
+        ['3:00 PM', 'Senso-ji Temple', 'Visit Tokyo’s best-known Buddhist temple.', 'fun', []],
         ['4:15 PM', 'Sumida River walk', 'Take a relaxed riverside stroll.', 'fun', []],
         ['6:00 PM', 'Flexible light dinner', 'Choose a nearby spot after the Asakusa walk.', 'food', []]
       ]},
@@ -552,21 +546,21 @@
       { key: 'nov11', date: 'Wed · Nov 11', area: 'Ikebukuro', stops: [
         ['8:00 AM', 'Shinpachi Shokudo', 'Grilled-fish breakfast at the Ikebukuro West branch.', 'food', []],
         ['11:00 AM', 'Espresso D Works', 'Cafe brunch beside Sunshine City.', 'food', []],
-        ['12:45 PM', 'Sunshine City', 'Shopping at the mall, Pokemon Center and Animate.', 'shopping', []],
+        ['12:45 PM', 'Sunshine City', 'Shopping at the mall, Pokemon Center and Animate.', 'fun', []],
         ['3:30 PM', 'Gashapon Department Store', 'Browse capsule toys and try the machines.', 'fun', []],
         ['5:30 PM', 'Kikanbo Ikebukuro', 'Spicy miso ramen before the main dinner queue.', 'food', []]
       ]},
       { key: 'nov12', date: 'Thu · Nov 12', area: 'Toyosu, Marunouchi & Ginza', stops: [
         ['9:00 AM', 'teamLab Planets', 'Timed entry to the immersive art museum. Allow 90–105 minutes.', 'fun', ['New', 'Book']],
         ['11:45 AM', 'Nemuro Hanamaru · KITTE', 'Sushi lunch at the Marunouchi branch.', 'food', []],
-        ['1:30 PM', 'Ginza & Yurakucho', 'Shopping and department-store browsing.', 'shopping', []],
+        ['1:30 PM', 'Ginza & Yurakucho', 'Shopping and department-store browsing.', 'fun', []],
         ['3:30 PM', 'Oosumi Tamaya', 'Fruit daifuku snack in Ginza.', 'food', []],
-        ['4:00 PM', 'More Ginza shopping', 'Continue browsing before dinner.', 'shopping', []],
+        ['4:00 PM', 'More Ginza shopping', 'Continue browsing before dinner.', 'fun', []],
         ['5:30 PM', 'Tempura Abe Ginza', 'Tempura dinner; reserve ahead.', 'food', ['Book']]
       ]},
       { key: 'nov13', date: 'Fri · Nov 13', area: 'Shibuya', stops: [
         ['8:30 AM', 'Komeraku', 'Chameshi and ochazuke breakfast.', 'food', ['Picture 2']],
-        ['10:00 AM', 'Shibuya shops', 'Browse around the station and Scramble Crossing.', 'shopping', []],
+        ['10:00 AM', 'Shibuya shops', 'Browse around the station and Scramble Crossing.', 'fun', []],
         ['10:45 AM', 'Scramble Crossing', 'See the famous crossing from the street or an upper floor.', 'fun', []],
         ['11:30 AM', 'Hikiniku to Come', 'Hamburg rice lunch. Online registration only.', 'food', ['Book']],
         ['2:30 PM', 'Kuro Mame or Acid Coffee', 'Choose the cafe closest to the shopping route.', 'food', []],
@@ -577,7 +571,7 @@
         ['10:00 AM', 'mipig cafe Harajuku', 'Micro-pig visit. Reserve ahead and arrive 10 minutes early.', 'fun', ['New', 'Book']],
         ['11:10 AM', 'AMAM DACOTAN / I’m donut?', 'Bakery and doughnut stop. Use mobile ordering if offered.', 'food', []],
         ['12:00 PM', 'Tonkatsu Maisen Aoyama', 'Tonkatsu lunch. Arrive close to opening to reduce the queue.', 'food', []],
-        ['1:45 PM', 'Cat Street & Omotesando', 'Walk and shop along this corridor.', 'shopping', []],
+        ['1:45 PM', 'Cat Street & Omotesando', 'Walk and shop along this corridor.', 'fun', []],
         ['4:00 PM', 'Jean-Paul Hévin', 'Chocolate drink break in Omotesando Hills.', 'food', ['Picture 2']],
         ['5:00 PM', 'Travel to Akasaka', 'Allow time to get to dinner.', 'travel', []],
         ['7:00 PM', 'SABASU · Akasaka', 'Reserved sourdough-pizza dinner.', 'food', ['Book']]
@@ -626,7 +620,8 @@
         const supplied = byKey.get(template.key);
         if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
         const stops = supplied.stops.map(stop => {
-          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 7 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
+          const categoryKey = stop?.[3] === 'shopping' || stop?.[3] === 'culture' ? 'fun' : stop?.[3];
+          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 7 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, categoryKey) || !Array.isArray(stop[4])) {
             throw new Error('A stop in the draft has an invalid format.');
           }
           const time = stop[0].trim();
@@ -638,7 +633,7 @@
           if (stop[6] != null && typeof stop[6] !== 'string') throw new Error('A stop Google Maps URL must be text.');
           const imageUrl = normalizeImageUrl(stop[5]);
           const mapUrl = normalizeGoogleMapsUrl(stop[6]);
-          const normalized = [time, name, note, stop[3], tags];
+          const normalized = [time, name, note, categoryKey, tags];
           if (imageUrl || mapUrl) normalized.push(imageUrl);
           if (mapUrl) normalized.push(mapUrl);
           return normalized;
