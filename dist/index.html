@@ -64,6 +64,39 @@
 
     .toolbar { display: flex; align-items: center; gap: 9px; overflow-x: auto; padding: 8px 2px 18px; scrollbar-width: none; }
     .controls { padding: 14px 16px 2px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
+    .plan-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0 13px; border-top: 1px solid #e9e5dc; }
+    .plan-tools-main, .plan-tools-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .plan-tools-actions[hidden], .plan-instructions[hidden] { display: none !important; }
+    .plan-save-note { margin: 0; color: var(--muted); font-size: .875rem; }
+    .plan-save-note[role="status"] { min-height: 1.4em; }
+    .plan-button { min-height: 44px; padding: 9px 14px; border: 1px solid var(--ink); border-radius: 11px; color: var(--ink); background: var(--card); cursor: pointer; font-weight: 800; }
+    .plan-button.primary { color: white; background: var(--ink); }
+    .plan-button:hover, .plan-button:focus-visible { outline: 3px solid rgba(211,166,43,.42); outline-offset: 2px; }
+    .plan-button.danger { color: #963522; border-color: #d5a99d; }
+    .plan-instructions { flex-basis: 100%; margin: 0; color: var(--muted); font-size: .875rem; }
+    .stop-actions { display: none; }
+    body.edit-mode .stop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .stop-actions { max-width: 265px; }
+    .stop-action { min-height: 40px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); cursor: pointer; font-weight: 750; font-size: .875rem; }
+    .stop-action.delete { color: #963522; }
+    .day-add { display: none; min-height: 40px; padding: 7px 11px; border: 1px solid rgba(255,255,255,.6); border-radius: 10px; color: white; background: rgba(255,255,255,.12); cursor: pointer; font-weight: 800; }
+    body.edit-mode .day-add { display: inline-flex; align-items: center; }
+    body.edit-mode .day-head { align-items: center; }
+    .day-head-tools { display: flex; align-items: center; gap: 12px; }
+    .edit-dialog { width: min(560px, calc(100% - 24px)); max-height: min(88vh, 850px); padding: 0; border: 1px solid var(--line); border-radius: 20px; color: var(--ink); background: var(--card); box-shadow: 0 24px 80px rgba(16,38,63,.25); }
+    .edit-dialog::backdrop { background: rgba(16,38,63,.55); backdrop-filter: blur(3px); }
+    .dialog-inner { padding: 22px; }
+    .dialog-inner h2 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 1.6rem; }
+    .dialog-hint { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
+    .stop-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-field { display: grid; gap: 5px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { font-size: .875rem; font-weight: 800; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #b8b7b0; border-radius: 10px; color: var(--ink); background: white; }
+    .form-field textarea { min-height: 92px; resize: vertical; }
+    .dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .import-summary { margin: 0 0 12px; color: var(--ink-2); }
+    .import-warning { margin: 0; padding: 12px 14px; border-left: 4px solid var(--gold); border-radius: 8px; color: var(--ink-2); background: #fff7df; font-size: .9rem; }
     .filter-group { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 12px; }
     .filter-group + .filter-group { border-top: 1px solid #e9e5dc; }
     .filter-label { margin: 0; color: var(--muted); font-size: .875rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
@@ -187,6 +220,19 @@
       footer { display: block; }
       .photo-credits { margin-top: 12px; }
       .photo-credits ul { grid-template-columns: 1fr; }
+      .plan-tools { align-items: stretch; }
+      .plan-tools-main, .plan-tools-actions { width: 100%; }
+      .plan-tools-main .plan-button { flex: 1; }
+      .plan-tools-actions .plan-button { flex: 1; }
+      .plan-save-note { width: 100%; }
+      .stop-actions { justify-content: flex-start !important; }
+      .stop-action { min-height: 44px; }
+      .day-head-tools { align-items: flex-start; justify-content: space-between; margin-top: 8px; }
+      .day-head-tools > span { align-self: center; }
+      .stop-form-grid { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: auto; }
+      .dialog-inner { padding: 18px; }
+      .dialog-actions .plan-button { flex: 1; }
     }
   </style>
 </head>
@@ -220,6 +266,20 @@
       <div class="filter-group"><h2 class="filter-label">Choose day</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
       <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
       <p class="photo-note">Photo tags: PLACE is the stop; AREA is nearby; DISH and REP are representative images, not photos from the named restaurant or venue.</p>
+      <div class="plan-tools" aria-label="Edit your itinerary">
+        <div class="plan-tools-main">
+          <button class="plan-button primary" id="edit-toggle" type="button" aria-pressed="false">Edit itinerary</button>
+          <p class="plan-save-note" id="save-status" role="status" aria-live="polite">Your plan edits save only in this browser.</p>
+        </div>
+        <div class="plan-tools-actions" id="edit-tools" hidden>
+          <button class="plan-button" id="add-stop" type="button">Add stop</button>
+          <button class="plan-button" id="export-plan" type="button">Export draft</button>
+          <button class="plan-button" id="import-plan" type="button">Import draft</button>
+          <button class="plan-button danger" id="reset-plan" type="button">Reset local edits</button>
+          <input id="import-file" type="file" accept="application/json,.json" hidden />
+        </div>
+        <p class="plan-instructions" id="edit-instructions" hidden>Edit or remove stops, add new ones, then export a JSON draft to share. Importing replaces only the plan saved in this browser; it does not change the public itinerary.</p>
+      </div>
     </section>
 
     <div class="layout">
@@ -264,6 +324,53 @@
       <details class="photo-credits"><summary>Photo credits and licenses</summary><ul id="photo-credit-list"></ul></details>
     </footer>
   </main>
+
+  <dialog class="edit-dialog" id="stop-dialog" aria-labelledby="stop-dialog-title">
+    <div class="dialog-inner">
+      <h2 id="stop-dialog-title">Add a stop</h2>
+      <p class="dialog-hint">Changes save only in this browser. New places do not get a photo automatically.</p>
+      <form id="stop-form">
+        <div class="stop-form-grid">
+          <div class="form-field">
+            <label for="stop-day">Day</label>
+            <select id="stop-day" name="day" required></select>
+          </div>
+          <div class="form-field">
+            <label for="stop-time">Time</label>
+            <input id="stop-time" name="time" type="text" maxlength="40" placeholder="e.g. 2:30 PM" required />
+          </div>
+          <div class="form-field full">
+            <label for="stop-name">Place or activity</label>
+            <input id="stop-name" name="name" type="text" maxlength="120" required />
+          </div>
+          <div class="form-field full">
+            <label for="stop-note">Area or note</label>
+            <textarea id="stop-note" name="note" maxlength="320" placeholder="Why this stop fits the day, or a practical note"></textarea>
+          </div>
+          <div class="form-field full">
+            <label for="stop-category">Purpose</label>
+            <select id="stop-category" name="category" required></select>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="plan-button" id="cancel-stop" type="button">Cancel</button>
+          <button class="plan-button primary" type="submit">Save stop</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="edit-dialog" id="import-dialog" aria-labelledby="import-dialog-title">
+    <div class="dialog-inner">
+      <h2 id="import-dialog-title">Review imported draft</h2>
+      <p class="import-summary" id="import-summary"></p>
+      <p class="import-warning">Applying this file replaces the itinerary saved in this browser. The published site stays unchanged. Export your current draft first if you want a backup.</p>
+      <div class="dialog-actions">
+        <button class="plan-button" id="cancel-import" type="button">Cancel</button>
+        <button class="plan-button primary" id="apply-import" type="button">Apply to this browser</button>
+      </div>
+    </div>
+  </dialog>
 
   <script>
     const categories = {
@@ -354,7 +461,7 @@
       'SABASU · Akasaka': { id: 'pizza', type: 'DISH' }
     };
 
-    const days = [
+    const defaultDays = [
       { key: 'nov6', date: 'Fri · Nov 6', area: 'Sumida & Kinshicho', stops: [
         ['1:35 PM', 'Arrive Haneda and check in', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
         ['5:00 PM', 'Tokyo Skytree observation deck', 'A first city view close to the hotel.', 'fun', ['Book']],
@@ -413,6 +520,45 @@
       ]}
     ];
 
+    const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
+    const PLAN_FORMAT = 'tokyo-trip-itinerary-draft';
+
+    function normalizePlan(candidate) {
+      if (!Array.isArray(candidate) || candidate.length !== defaultDays.length) throw new Error('This file does not contain all expected trip dates.');
+      const byKey = new Map(candidate.map(day => [day?.key, day]));
+      if (byKey.size !== defaultDays.length || defaultDays.some(day => !byKey.has(day.key))) throw new Error('The draft dates do not match this trip.');
+      return defaultDays.map(template => {
+        const supplied = byKey.get(template.key);
+        if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
+        const stops = supplied.stops.map(stop => {
+          if (!Array.isArray(stop) || stop.length < 5 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, stop[3]) || !Array.isArray(stop[4])) {
+            throw new Error('A stop in the draft has an invalid format.');
+          }
+          const time = stop[0].trim();
+          const name = stop[1].trim();
+          const note = stop[2].trim();
+          const tags = stop[4].filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
+          if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
+          return [time, name, note, stop[3], tags];
+        });
+        return { key: template.key, date: template.date, area: template.area, stops };
+      });
+    }
+
+    function readSavedPlan() {
+      try {
+        const saved = localStorage.getItem(PLAN_STORAGE_KEY);
+        if (!saved) return JSON.parse(JSON.stringify(defaultDays));
+        return normalizePlan(JSON.parse(saved).days);
+      } catch {
+        const status = document.querySelector('#save-status');
+        if (status) status.textContent = 'Could not load this browser’s draft; the original itinerary is showing.';
+        return JSON.parse(JSON.stringify(defaultDays));
+      }
+    }
+
+    let days = readSavedPlan();
+
     const bookings = [
       ['teamlab', 'teamLab Planets', 'Thu · Nov 12 · 9:00 AM'],
       ['tempura', 'Tempura Abe Ginza', 'Thu · Nov 12 · dinner'],
@@ -425,8 +571,47 @@
     const filters = document.querySelector('#filters');
     const typeFilters = document.querySelector('#type-filters');
     const bookingList = document.querySelector('#booking-list');
+    const editToggle = document.querySelector('#edit-toggle');
+    const editTools = document.querySelector('#edit-tools');
+    const editInstructions = document.querySelector('#edit-instructions');
+    const saveStatus = document.querySelector('#save-status');
+    const stopDialog = document.querySelector('#stop-dialog');
+    const stopForm = document.querySelector('#stop-form');
+    const importDialog = document.querySelector('#import-dialog');
+    const importFile = document.querySelector('#import-file');
     let activeDay = 'all';
     let activeCategory = 'all';
+    let editMode = false;
+    let editedStop = null;
+    let pendingImport = null;
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+    }
+
+    function setStatus(message) {
+      saveStatus.textContent = message;
+    }
+
+    function setActiveDay(dayKey) {
+      activeDay = dayKey;
+      filters.querySelectorAll('button').forEach(button => {
+        const active = button.dataset.day === dayKey;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      renderDays();
+    }
+
+    function setActiveCategory(categoryKey) {
+      activeCategory = categoryKey;
+      typeFilters.querySelectorAll('button').forEach(button => {
+        const active = button.dataset.category === categoryKey;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      renderDays();
+    }
 
     function chipClass(label) {
       if (label === 'Book') return 'book';
@@ -439,26 +624,36 @@
       if (!reference) return '';
       const photo = photoLibrary[reference.id];
       const alt = reference.alt || photo.alt;
-      return '<a class="stop-photo" href="' + photo.source + '" target="_blank" rel="noopener noreferrer" aria-label="Open photo source for ' + name + ': ' + alt + '">' +
-        '<img src="' + photo.src + '" alt="' + alt + '" loading="lazy" decoding="async" />' +
-        '<span aria-hidden="true">' + reference.type + '</span></a>';
+      return '<a class="stop-photo" href="' + escapeHtml(photo.source) + '" target="_blank" rel="noopener noreferrer" aria-label="Open photo source for ' + escapeHtml(name) + ': ' + escapeHtml(alt) + '">' +
+        '<img src="' + escapeHtml(photo.src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" decoding="async" />' +
+        '<span aria-hidden="true">' + escapeHtml(reference.type) + '</span></a>';
     }
 
     function renderDays() {
       timeline.innerHTML = days.filter(day => activeDay === 'all' || day.key === activeDay).map(day => {
-        const stops = day.stops.filter(stop => activeCategory === 'all' || stop[3] === activeCategory);
-        if (!stops.length) return '';
+        const visibleStops = day.stops.map((stop, index) => ({ stop, index })).filter(({ stop }) => activeCategory === 'all' || stop[3] === activeCategory);
+        if (!visibleStops.length && !(editMode && activeCategory === 'all')) return '';
         return '<article class="day">' +
-          '<div class="day-head"><h2>' + day.date + '</h2><span>' + day.area + '</span></div>' +
-          '<div class="stops">' + stops.map(stop => {
+          '<div class="day-head"><h2>' + escapeHtml(day.date) + '</h2><div class="day-head-tools"><span>' + escapeHtml(day.area) + '</span>' +
+            '<button class="day-add" type="button" data-add-day="' + escapeHtml(day.key) + '">Add stop</button></div></div>' +
+          '<div class="stops">' + visibleStops.map(({ stop, index }) => {
             const hasPhoto = Boolean(stopPhotos[stop[1]]);
             const category = categories[stop[3]];
+            const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
+            const actions = editMode
+              ? '<div class="stop-actions">' +
+                '<button class="stop-action" type="button" data-edit-day="' + escapeHtml(day.key) + '" data-edit-index="' + index + '">Edit</button>' +
+                '<button class="stop-action" type="button" data-move-day="' + escapeHtml(day.key) + '" data-move-index="' + index + '" data-direction="up"' + (index === 0 ? ' disabled' : '') + '>Move up</button>' +
+                '<button class="stop-action" type="button" data-move-day="' + escapeHtml(day.key) + '" data-move-index="' + index + '" data-direction="down"' + (index === day.stops.length - 1 ? ' disabled' : '') + '>Move down</button>' +
+                '<button class="stop-action delete" type="button" data-delete-day="' + escapeHtml(day.key) + '" data-delete-index="' + index + '">Remove</button>' +
+                '</div>'
+              : '';
             return '<div class="stop ' + (hasPhoto ? 'with-photo' : '') + '">' +
-              '<div class="time">' + stop[0].replace(/ (AM|PM)$/, '<span>$1</span>') + '</div>' +
+              '<div class="time">' + safeTime + '</div>' +
               renderStopPhoto(stop[1]) +
-              '<div class="stop-copy"><h3>' + stop[1] + '</h3><p>' + stop[2] + '</p></div>' +
+              '<div class="stop-copy"><h3>' + escapeHtml(stop[1]) + '</h3><p>' + escapeHtml(stop[2]) + '</p></div>' +
               '<div class="stop-meta"><span class="activity-badge ' + category.className + '"><span class="activity-icon" aria-hidden="true">' + category.icon + '</span>' + category.label + '</span>' +
-              '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + tag + '</span>').join('') + '</div></div>' +
+              '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + escapeHtml(tag) + '</span>').join('') + '</div>' + actions + '</div>' +
               '</div>';
           }).join('') + '</div></article>';
       }).join('');
@@ -470,11 +665,7 @@
       filters.addEventListener('click', event => {
         const button = event.target.closest('button');
         if (!button) return;
-        filters.querySelectorAll('button').forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-        filters.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        activeDay = button.dataset.day;
-        renderDays();
+        setActiveDay(button.dataset.day);
       });
 
       const typeItems = [['all','All stops'], ...Object.entries(categories).map(([key, category]) => [key, category.label])];
@@ -482,11 +673,7 @@
       typeFilters.addEventListener('click', event => {
         const button = event.target.closest('button');
         if (!button) return;
-        typeFilters.querySelectorAll('button').forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-        typeFilters.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        activeCategory = button.dataset.category;
-        renderDays();
+        setActiveCategory(button.dataset.category);
       });
     }
 
@@ -515,10 +702,179 @@
       }).join('');
     }
 
+    function savePlan() {
+      try {
+        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify({ version: 1, days }));
+        setStatus('Draft saved in this browser. Export JSON to share it.');
+        return true;
+      } catch {
+        setStatus('This browser could not save the draft. Export it now to keep a copy.');
+        return false;
+      }
+    }
+
+    function openStopForm(dayKey, stopIndex = null) {
+      const daySelect = document.querySelector('#stop-day');
+      const categorySelect = document.querySelector('#stop-category');
+      if (!daySelect.options.length) {
+        daySelect.innerHTML = defaultDays.map(day => '<option value="' + escapeHtml(day.key) + '">' + escapeHtml(day.date.replace(' · ', ' ')) + ' — ' + escapeHtml(day.area) + '</option>').join('');
+        categorySelect.innerHTML = Object.entries(categories).map(([key, category]) => '<option value="' + key + '">' + escapeHtml(category.label) + '</option>').join('');
+      }
+      editedStop = stopIndex === null ? null : { dayKey, stopIndex };
+      const stop = stopIndex === null ? null : days.find(day => day.key === dayKey)?.stops[stopIndex];
+      document.querySelector('#stop-dialog-title').textContent = stop ? 'Edit stop' : 'Add a stop';
+      daySelect.value = dayKey || defaultDays[0].key;
+      document.querySelector('#stop-time').value = stop?.[0] || '';
+      document.querySelector('#stop-name').value = stop?.[1] || '';
+      document.querySelector('#stop-note').value = stop?.[2] || '';
+      categorySelect.value = stop?.[3] || 'food';
+      stopDialog.showModal();
+      document.querySelector('#stop-time').focus();
+    }
+
+    function updatePlanAfterChange(dayKey, message) {
+      setActiveCategory('all');
+      setActiveDay(dayKey);
+      savePlan();
+      if (message && saveStatus.textContent.startsWith('Draft saved')) setStatus(message);
+    }
+
+    function countStops(plan) {
+      return plan.reduce((total, day) => total + day.stops.length, 0);
+    }
+
+    function initializeEditor() {
+      const stored = localStorage.getItem(PLAN_STORAGE_KEY);
+      if (stored && saveStatus.textContent === 'Your plan edits save only in this browser.') {
+        setStatus('A draft from this browser is loaded. Export JSON to share it.');
+      }
+
+      editToggle.addEventListener('click', () => {
+        editMode = !editMode;
+        document.body.classList.toggle('edit-mode', editMode);
+        editToggle.setAttribute('aria-pressed', String(editMode));
+        editToggle.textContent = editMode ? 'Finish editing' : 'Edit itinerary';
+        editTools.hidden = !editMode;
+        editInstructions.hidden = !editMode;
+        renderDays();
+      });
+
+      document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? defaultDays[0].key : activeDay));
+      document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
+      stopForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const form = new FormData(stopForm);
+        const targetDayKey = String(form.get('day'));
+        const targetDay = days.find(day => day.key === targetDayKey);
+        if (!targetDay) return;
+        const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), String(form.get('category')), []];
+        if (editedStop) {
+          const oldDay = days.find(day => day.key === editedStop.dayKey);
+          if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
+          if (oldDay === targetDay) oldDay.stops[editedStop.stopIndex] = stop;
+          else {
+            oldDay.stops.splice(editedStop.stopIndex, 1);
+            targetDay.stops.push(stop);
+          }
+        } else {
+          targetDay.stops.push(stop);
+        }
+        editedStop = null;
+        stopDialog.close();
+        updatePlanAfterChange(targetDay.key, 'Stop saved in this browser. Export JSON to share it.');
+      });
+
+      timeline.addEventListener('click', event => {
+        const addButton = event.target.closest('[data-add-day]');
+        if (addButton) return openStopForm(addButton.dataset.addDay);
+        const editButton = event.target.closest('[data-edit-index]');
+        if (editButton) return openStopForm(editButton.dataset.editDay, Number(editButton.dataset.editIndex));
+        const deleteButton = event.target.closest('[data-delete-index]');
+        if (deleteButton) {
+          const day = days.find(item => item.key === deleteButton.dataset.deleteDay);
+          const stopIndex = Number(deleteButton.dataset.deleteIndex);
+          if (!day || !day.stops[stopIndex]) return;
+          if (!window.confirm('Remove “' + day.stops[stopIndex][1] + '” from this browser’s itinerary?')) return;
+          day.stops.splice(stopIndex, 1);
+          updatePlanAfterChange(day.key, 'Stop removed from this browser’s draft.');
+          return;
+        }
+        const moveButton = event.target.closest('[data-move-index]');
+        if (moveButton) {
+          const day = days.find(item => item.key === moveButton.dataset.moveDay);
+          const index = Number(moveButton.dataset.moveIndex);
+          const nextIndex = moveButton.dataset.direction === 'up' ? index - 1 : index + 1;
+          if (!day || nextIndex < 0 || nextIndex >= day.stops.length) return;
+          [day.stops[index], day.stops[nextIndex]] = [day.stops[nextIndex], day.stops[index]];
+          updatePlanAfterChange(day.key, 'Stop order saved in this browser.');
+        }
+      });
+
+      document.querySelector('#export-plan').addEventListener('click', () => {
+        const data = { format: PLAN_FORMAT, version: 1, exportedAt: new Date().toISOString(), days };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'tokyo-trip-draft-' + new Date().toISOString().slice(0, 10) + '.json';
+        link.click();
+        URL.revokeObjectURL(url);
+        setStatus('Draft exported. Send the JSON file to the trip owner to review.');
+      });
+
+      document.querySelector('#import-plan').addEventListener('click', () => importFile.click());
+      importFile.addEventListener('change', async () => {
+        const file = importFile.files?.[0];
+        if (!file) return;
+        try {
+          if (file.size > 1024 * 1024) throw new Error('The draft file is larger than 1 MB.');
+          const data = JSON.parse(await file.text());
+          if (data?.format !== PLAN_FORMAT || data.version !== 1) throw new Error('That file is not a supported Tokyo trip draft.');
+          pendingImport = normalizePlan(data.days);
+          document.querySelector('#import-summary').textContent = 'This file contains ' + countStops(pendingImport) + ' stops across ' + pendingImport.length + ' trip dates. Review it before replacing this browser’s local itinerary.';
+          importDialog.showModal();
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : 'Could not read that draft file.');
+        } finally {
+          importFile.value = '';
+        }
+      });
+
+      document.querySelector('#cancel-import').addEventListener('click', () => {
+        pendingImport = null;
+        importDialog.close();
+      });
+      document.querySelector('#apply-import').addEventListener('click', () => {
+        if (!pendingImport) return;
+        days = pendingImport;
+        pendingImport = null;
+        importDialog.close();
+        setActiveCategory('all');
+        setActiveDay('all');
+        const saved = savePlan();
+        renderDays();
+        if (saved) setStatus('Imported draft is saved only in this browser. The public itinerary is unchanged.');
+      });
+
+      document.querySelector('#reset-plan').addEventListener('click', () => {
+        if (!window.confirm('Reset this browser to the original published itinerary? Export your draft first if you want to keep it.')) return;
+        try {
+          localStorage.removeItem(PLAN_STORAGE_KEY);
+          days = JSON.parse(JSON.stringify(defaultDays));
+          setActiveCategory('all');
+          setActiveDay('all');
+          setStatus('Original itinerary restored in this browser.');
+        } catch {
+          setStatus('Could not reset this browser’s itinerary.');
+        }
+      });
+    }
+
     renderFilters();
     renderDays();
     renderBookings();
     renderPhotoCredits();
+    initializeEditor();
   </script>
 </body>
 </html>
