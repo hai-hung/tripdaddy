@@ -304,7 +304,7 @@
       <div class="food-buckets" aria-label="Food types and planning status">
         <div class="food-bucket-items" id="food-bucket-items" aria-live="polite"></div>
         <form class="food-bucket-form" id="food-bucket-form">
-          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" list="food-bucket-suggestions" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
+          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="600" list="food-bucket-suggestions" placeholder="Add food types, separated by commas" aria-label="New food types, comma separated" />
           <datalist id="food-bucket-suggestions"></datalist>
           <button class="plan-button" type="submit">Add food type</button>
         </form>
@@ -955,11 +955,13 @@
       }).join('') : '<p class="day-empty">No food types added yet. Choose Edit itinerary to start your list.</p>';
       const subcategoryDatalist = document.querySelector('#food-subcategory-options');
       const bucketDatalist = document.querySelector('#food-bucket-suggestions');
-      const query = document.querySelector('#food-bucket-name')?.value.trim().toLocaleLowerCase() || '';
+      const inputTerms = (document.querySelector('#food-bucket-name')?.value || '').split(',').map(type => type.trim()).filter(Boolean);
+      const query = (inputTerms.at(-1) || '').toLocaleLowerCase();
       const alreadyAdded = new Set(types.map(type => type.toLocaleLowerCase()));
+      const alreadyTyped = new Set(inputTerms.map(type => type.toLocaleLowerCase()));
       const existing = uniqueFoodTypes(days.flatMap(day => day.stops.filter(stop => stop[3] === 'food').map(stop => stop[7])));
       const available = existing
-        .filter(type => !alreadyAdded.has(type.toLocaleLowerCase()) && (!query || type.toLocaleLowerCase().includes(query)));
+        .filter(type => !alreadyAdded.has(type.toLocaleLowerCase()) && !alreadyTyped.has(type.toLocaleLowerCase()) && (!query || type.toLocaleLowerCase().includes(query)));
       bucketDatalist.innerHTML = available.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
       subcategoryDatalist.innerHTML = existing.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
     }
@@ -1084,14 +1086,32 @@
       document.querySelector('#food-bucket-form').addEventListener('submit', event => {
         event.preventDefault();
         const input = document.querySelector('#food-bucket-name');
-        const value = input.value.trim();
-        if (!value) return input.focus();
-        if (value.length > 60) return;
-        if (!foodTypes.some(type => type.toLocaleLowerCase() === value.toLocaleLowerCase())) foodTypes.push(value);
+        const values = input.value.split(',').map(type => type.trim()).filter(Boolean);
+        if (!values.length) return input.focus();
+        const known = new Set(foodTypes.map(type => type.toLocaleLowerCase()));
+        const added = [];
+        let duplicates = 0;
+        let tooLong = 0;
+        for (const value of values) {
+          const normalized = value.toLocaleLowerCase();
+          if (value.length > 60) {
+            tooLong++;
+          } else if (known.has(normalized)) {
+            duplicates++;
+          } else {
+            known.add(normalized);
+            foodTypes.push(value);
+            added.push(value);
+          }
+        }
         input.value = '';
         renderFoodBuckets();
-        savePlan();
-        setStatus('Food type added to the bucket list. Add a matching food stop to mark it planned.');
+        if (added.length) savePlan();
+        const parts = [];
+        if (added.length) parts.push(added.length + ' food type' + (added.length === 1 ? '' : 's') + ' added');
+        if (duplicates) parts.push(duplicates + ' duplicate' + (duplicates === 1 ? '' : 's') + ' skipped');
+        if (tooLong) parts.push(tooLong + ' item' + (tooLong === 1 ? '' : 's') + ' skipped (60-character limit)');
+        setStatus(parts.length ? parts.join('. ') + '.' : 'Those food types are already in the bucket list.');
       });
       document.querySelector('#food-bucket-name').addEventListener('input', renderFoodBuckets);
       document.querySelector('#food-bucket-items').addEventListener('click', event => {
