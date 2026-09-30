@@ -79,10 +79,6 @@
     .stop-actions { max-width: 265px; }
     .stop-action { min-height: 40px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); cursor: pointer; font-weight: 750; font-size: .875rem; }
     .stop-action.delete { color: #963522; }
-    .day-add { display: none; min-height: 40px; padding: 7px 11px; border: 1px solid rgba(255,255,255,.6); border-radius: 10px; color: white; background: rgba(255,255,255,.12); cursor: pointer; font-weight: 800; }
-    body.edit-mode .day-add { display: inline-flex; align-items: center; }
-    body.edit-mode .day-head { align-items: center; }
-    .day-head-tools { display: flex; align-items: center; gap: 12px; }
     .accommodation { margin: 0 0 18px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 8px 25px rgba(16,38,63,.045); }
     .accommodation-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 20px; margin-bottom: 12px; }
     .accommodation-heading h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.6rem; font-weight: 600; letter-spacing: -.03em; }
@@ -115,6 +111,7 @@
     .dialog-hint { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
     .stop-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-field { display: grid; gap: 5px; }
+    .form-field[hidden] { display: none; }
     .form-field.full { grid-column: 1 / -1; }
     .image-url-rows { display: grid; gap: 8px; }
     .image-url-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; gap: 7px; align-items: center; }
@@ -197,6 +194,16 @@
     .food-body .kicker { color: var(--red); font-size: .72rem; font-weight: 850; text-transform: uppercase; letter-spacing: .1em; }
     .food-body h3 { margin: 5px 0 6px; font-size: 1.08rem; }
     .food-body p { margin: 0; color: var(--muted); font-size: .875rem; }
+    .food-buckets { margin: 0 0 18px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+    .food-bucket-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .food-bucket { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: white; font-size: .9rem; }
+    .food-bucket-check { width: 19px; height: 19px; display: grid; place-items: center; border-radius: 50%; color: white; background: #a9b1b5; font-size: .75rem; font-weight: 900; }
+    .food-bucket.planned .food-bucket-check { background: #16735c; }
+    .food-bucket-form { display: none; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 12px; }
+    body.edit-mode .food-bucket-form { display: grid; }
+    .food-bucket-form input { min-width: 0; min-height: 44px; padding: 9px 12px; border: 1px solid #b8b7b0; border-radius: 10px; }
+    .food-subcategory { padding: 4px 8px; border-radius: 999px; color: #754318; background: #fff0d8; font-size: .8rem; font-weight: 750; }
+    .food-subcategory[hidden] { display: none; }
     .source-link { display: inline-block; margin-top: 11px; font-size: .875rem; font-weight: 800; text-underline-offset: 3px; }
     .photo-credits { flex: 1; }
     .photo-credits summary { font-size: .9rem; font-weight: 800; cursor: pointer; }
@@ -321,7 +328,7 @@
     </section>
 
     <section class="controls" aria-label="Filter itinerary">
-      <div class="filter-group"><h2 class="filter-label">Choose day</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
+      <div class="filter-group"><h2 class="filter-label">Choose date</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
       <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
       <p class="photo-note">Photo tags: PLACE is the stop; AREA is nearby; DISH and REP are representative images, not photos from the named restaurant or venue.</p>
       <div class="plan-tools" aria-label="Edit your itinerary">
@@ -330,14 +337,13 @@
           <p class="plan-save-note" id="save-status" role="status" aria-live="polite">Your plan edits save only in this browser.</p>
         </div>
         <div class="plan-tools-actions" id="edit-tools" hidden>
-          <button class="plan-button" id="add-day" type="button">Add day</button>
           <button class="plan-button" id="add-stop" type="button">Add stop</button>
           <button class="plan-button" id="export-plan" type="button">Export draft</button>
           <button class="plan-button" id="import-plan" type="button">Import draft</button>
           <button class="plan-button danger" id="reset-plan" type="button">Reset local edits</button>
           <input id="import-file" type="file" accept="application/json,.json" hidden />
         </div>
-        <p class="plan-instructions" id="edit-instructions" hidden>Add any day, then add, edit or remove stops. Changes stay in this browser; export a JSON draft to share them.</p>
+        <p class="plan-instructions" id="edit-instructions" hidden>Add a stop with its date; stops are grouped automatically and weekdays are calculated. Food types are free text. Changes stay in this browser; export a JSON draft to share them.</p>
       </div>
     </section>
 
@@ -357,10 +363,24 @@
       </aside>
     </div>
 
+    <section class="food-section" aria-labelledby="food-buckets-title">
+      <div class="section-title">
+        <h2 id="food-buckets-title">Food bucket list</h2>
+        <p>Add a food type here or on a stop. A check means at least one matching food stop is planned.</p>
+      </div>
+      <div class="food-buckets" aria-label="Food types and planning status">
+        <div class="food-bucket-items" id="food-bucket-items" aria-live="polite"></div>
+        <form class="food-bucket-form" id="food-bucket-form">
+          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
+          <button class="plan-button" type="submit">Add food type</button>
+        </form>
+      </div>
+    </section>
+
     <section class="food-section" aria-labelledby="food-title">
       <div class="section-title">
-        <h2 id="food-title">The food logic</h2>
-        <p>Only distinct food types from the second research sheet were added. Similar ramen, sushi, pizza, burger and okonomiyaki suggestions were left out.</p>
+        <h2 id="food-title">Trip highlights</h2>
+        <p>Research additions and nearby attractions picked to fit each day’s route.</p>
       </div>
       <div class="food-grid">
         <article class="food-card">
@@ -384,29 +404,6 @@
     </footer>
   </main>
 
-  <dialog class="edit-dialog" id="day-dialog" aria-labelledby="day-dialog-title">
-    <div class="dialog-inner">
-      <h2 id="day-dialog-title">Add a day</h2>
-      <p class="dialog-hint">Use any date or label, then add stops to the new day.</p>
-      <form id="day-form">
-        <div class="stop-form-grid">
-          <div class="form-field full">
-            <label for="day-label">Day / date</label>
-            <input id="day-label" name="date" type="text" maxlength="100" placeholder="e.g. Mon · Nov 16" required />
-          </div>
-          <div class="form-field full">
-            <label for="day-area">Area / neighbourhood (optional)</label>
-            <input id="day-area" name="area" type="text" maxlength="160" placeholder="e.g. Shinjuku" />
-          </div>
-        </div>
-        <div class="dialog-actions">
-          <button class="plan-button" id="cancel-day" type="button">Cancel</button>
-          <button class="plan-button primary" type="submit">Add day</button>
-        </div>
-      </form>
-    </div>
-  </dialog>
-
   <dialog class="edit-dialog" id="stop-dialog" aria-labelledby="stop-dialog-title">
     <div class="dialog-inner">
       <h2 id="stop-dialog-title">Add a stop</h2>
@@ -414,8 +411,12 @@
       <form id="stop-form">
         <div class="stop-form-grid">
           <div class="form-field">
-            <label for="stop-day">Day</label>
-            <select id="stop-day" name="day" required></select>
+            <label for="stop-date">Date</label>
+            <input id="stop-date" name="date" type="date" required />
+          </div>
+          <div class="form-field">
+            <label for="stop-area">Area / neighbourhood (optional)</label>
+            <input id="stop-area" name="area" type="text" maxlength="160" placeholder="e.g. Shinjuku" />
           </div>
           <div class="form-field">
             <label for="stop-time">Time</label>
@@ -432,6 +433,11 @@
           <div class="form-field full">
             <label for="stop-category">Purpose</label>
             <select id="stop-category" name="category" required></select>
+          </div>
+          <div class="form-field full" id="food-subcategory-field">
+            <label for="stop-subcategory">Food subcategory (optional)</label>
+            <input id="stop-subcategory" name="subcategory" type="text" maxlength="60" list="food-subcategory-options" placeholder="Type any food type, e.g. yakitori" />
+            <datalist id="food-subcategory-options"></datalist>
           </div>
           <div class="form-field full">
             <label for="stop-image-url-0">Image URLs (optional)</label>
@@ -561,7 +567,7 @@
       'SABASU · Akasaka': { id: 'pizza', type: 'DISH' }
     };
 
-    const defaultDays = [
+    const defaultDaySource = [
       { key: 'nov6', date: 'Fri · Nov 6', area: 'Sumida & Kinshicho', stops: [
         ['1:35 PM', 'Arrive Tokyo Hanada Airport', 'Allow immigration, baggage and 60–75 minutes into the city.', 'travel', []],
         ['3:00PM', 'Check in Hotel - Yoshii House', '5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)', 'travel', [], ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606007.jpg?k=0db1e9c68e7091da02f4196a98bcd0d21d16256b7b17611c9c343032cdde1019&o='], 'https://maps.app.goo.gl/kWKcrPnEj1jzReHL6']
@@ -613,6 +619,9 @@
       ]}
     ];
 
+    const defaultPlan = normalizePlan({ days: defaultDaySource });
+    let foodTypes = defaultPlan.foodTypes;
+
     const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
     const PLAN_FORMAT = 'tokyo-trip-itinerary-draft';
 
@@ -656,53 +665,135 @@
       return parsed.href;
     }
 
-    function normalizePlan(candidate) {
-      if (!Array.isArray(candidate) || !candidate.length || candidate.length > 100) throw new Error('A trip must contain between 1 and 100 days.');
-      const seenKeys = new Set();
-      return candidate.map(supplied => {
-        if (!supplied || typeof supplied.key !== 'string' || typeof supplied.date !== 'string' || typeof (supplied.area ?? '') !== 'string') throw new Error('A trip day has invalid details.');
-        const key = supplied.key.trim();
-        const date = supplied.date.trim();
-        const area = String(supplied.area || '').trim();
-        if (!key || key.length > 100 || !date || date.length > 100 || area.length > 160 || seenKeys.has(key)) throw new Error('A trip day has missing, duplicate or overly long details.');
-        seenKeys.add(key);
-        if (!Array.isArray(supplied.stops) || supplied.stops.length > 80) throw new Error('A trip day has an invalid number of stops.');
-        const stops = supplied.stops.map(stop => {
-          const categoryKey = stop?.[3] === 'shopping' || stop?.[3] === 'culture' ? 'fun' : stop?.[3];
-          if (!Array.isArray(stop) || stop.length < 5 || stop.length > 7 || typeof stop[0] !== 'string' || typeof stop[1] !== 'string' || typeof stop[2] !== 'string' || !Object.hasOwn(categories, categoryKey) || !Array.isArray(stop[4])) {
-            throw new Error('A stop in the draft has an invalid format.');
-          }
-          const time = stop[0].trim();
-          const name = stop[1].trim();
-          const note = stop[2].trim();
-          const tags = stop[4].filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
-          if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
-          if (stop[5] != null && typeof stop[5] !== 'string' && !Array.isArray(stop[5])) throw new Error('A stop image URL must be text or a list of URLs.');
-          if (stop[6] != null && typeof stop[6] !== 'string') throw new Error('A stop Google Maps URL must be text.');
-          const imageUrls = normalizeImageUrls(stop[5]);
-          const mapUrl = normalizeGoogleMapsUrl(stop[6]);
-          const normalized = [time, name, note, categoryKey, tags];
-          if (imageUrls.length || mapUrl) normalized.push(imageUrls);
-          if (mapUrl) normalized.push(mapUrl);
-          return normalized;
-        });
-        return { key, date, area, stops };
+    function parseDateValue(value) {
+      const raw = String(value || '').trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        const parsed = new Date(raw + 'T12:00:00Z');
+        if (!Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === raw) return raw;
+      }
+      const legacy = raw.match(/^(?:[^·]+·\s*)?([A-Za-z]+)\s+(\d{1,2})(?:,?\s+(\d{4}))?$/);
+      if (!legacy) throw new Error('Use a valid calendar date.');
+      const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      const month = months.indexOf(legacy[1].slice(0, 3).toLowerCase());
+      const day = Number(legacy[2]);
+      const year = Number(legacy[3] || 2026);
+      const parsed = new Date(Date.UTC(year, month, day, 12));
+      if (month < 0 || parsed.getUTCMonth() !== month || parsed.getUTCDate() !== day) throw new Error('Use a valid calendar date.');
+      return parsed.toISOString().slice(0, 10);
+    }
+
+    function displayDate(value) {
+      const iso = parseDateValue(value);
+      const [year, month, day] = iso.split('-').map(Number);
+      const date = new Date(year, month - 1, day, 12);
+      const weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
+      const monthDay = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(date);
+      return weekday + ' · ' + monthDay;
+    }
+
+    function inferFoodSubcategory(name, note) {
+      const title = String(name || '').toLowerCase();
+      const hint = String(note || '').match(/^\[([^\]]+)\]/);
+      if (hint) return hint[1].trim();
+      const patterns = [
+        [/leaves coffee|kuro mame|acid coffee|espresso d/, 'Coffee'], [/kuroki|kikanbo|ramen/, 'Ramen'],
+        [/izumo|unagi/, 'Unagi'], [/shinpachi|grilled.fish/, 'Grilled fish'], [/nemuro|sushi/, 'Sushi'],
+        [/oosumi|daifuku/, 'Daifuku'], [/tempura/, 'Tempura'], [/komeraku|ochazuke|chameshi/, 'Ochazuke'],
+        [/hikiniku|hamburg/, 'Hamburg steak'], [/moheji|monjayaki/, 'Monjayaki'],
+        [/amam|donut|bakery/, 'Bakery / doughnuts'], [/maisen|tonkatsu/, 'Tonkatsu'],
+        [/hévin|hevin|chocolate/, 'Chocolate'], [/sabasu|pizza/, 'Pizza'], [/breakfast/, 'Breakfast']
+      ];
+      return patterns.find(([pattern]) => pattern.test(title))?.[1] || '';
+    }
+
+    function uniqueFoodTypes(values) {
+      const seen = new Set();
+      return values.map(value => String(value || '').trim()).filter(value => {
+        const key = value.toLocaleLowerCase();
+        if (!value || value.length > 60 || seen.has(key)) return false;
+        seen.add(key);
+        return true;
       });
+    }
+
+    function serializeStops(planDays = days) {
+      return planDays.flatMap(day => day.stops.map(stop => ({
+        time: stop[0], name: stop[1], note: stop[2], category: stop[3], tags: stop[4],
+        imageUrls: stopImageUrls(stop), mapUrl: stop[6] || '', subcategory: stop[7] || '', date: stop[8], area: stop[9] || ''
+      })));
+    }
+
+    function normalizePlan(candidate) {
+      const rawStops = [];
+      const knownTypes = [];
+      if (Array.isArray(candidate) || Array.isArray(candidate?.days)) {
+        const suppliedDays = Array.isArray(candidate) ? candidate : candidate.days;
+        if (suppliedDays.length > 100) throw new Error('A trip can contain up to 100 dates.');
+        suppliedDays.forEach(day => {
+          if (!day || typeof day.date !== 'string' || !Array.isArray(day.stops) || day.stops.length > 300) throw new Error('A trip date has invalid details.');
+          const date = parseDateValue(day.date);
+          day.stops.forEach(stop => rawStops.push({ stop, date, area: String(day.area || '') }));
+        });
+        if (candidate.foodTypes && Array.isArray(candidate.foodTypes)) knownTypes.push(...candidate.foodTypes);
+      } else if (candidate && Array.isArray(candidate.stops)) {
+        if (candidate.stops.length > 1000) throw new Error('A trip can contain up to 1,000 stops.');
+        rawStops.push(...candidate.stops.map(stop => ({ stop, date: stop?.date, area: stop?.area || '' })));
+        if (Array.isArray(candidate.foodTypes)) knownTypes.push(...candidate.foodTypes);
+      } else {
+        throw new Error('This draft has no valid trip dates or stops.');
+      }
+      const normalizedStops = rawStops.map(({ stop, date: inheritedDate, area: inheritedArea }) => {
+        const objectStop = !Array.isArray(stop) && stop && typeof stop === 'object';
+        const timeValue = objectStop ? stop.time : stop?.[0];
+        const nameValue = objectStop ? stop.name : stop?.[1];
+        const noteValue = objectStop ? stop.note : stop?.[2];
+        const rawCategory = objectStop ? stop.category : stop?.[3];
+        const categoryKey = rawCategory === 'shopping' || rawCategory === 'culture' ? 'fun' : rawCategory;
+        const tagValues = objectStop ? stop.tags : stop?.[4];
+        if (typeof timeValue !== 'string' || typeof nameValue !== 'string' || typeof noteValue !== 'string' || !Object.hasOwn(categories, categoryKey) || !Array.isArray(tagValues)) throw new Error('A stop in the draft has an invalid format.');
+        const time = timeValue.trim();
+        const name = nameValue.trim();
+        const note = noteValue.trim();
+        const tags = tagValues.filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
+        if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
+        const imageValue = objectStop ? stop.imageUrls : stop[5];
+        const mapValue = objectStop ? stop.mapUrl : stop[6];
+        if (imageValue != null && typeof imageValue !== 'string' && !Array.isArray(imageValue)) throw new Error('A stop image URL must be text or a list of URLs.');
+        if (mapValue != null && typeof mapValue !== 'string') throw new Error('A stop Google Maps URL must be text.');
+        const subcategoryValue = objectStop ? stop.subcategory : (stop[7] || '');
+        const foodSubcategory = categoryKey === 'food' ? String(subcategoryValue || inferFoodSubcategory(name, note)).trim().slice(0, 60) : '';
+        const stopDate = parseDateValue(objectStop ? stop.date : (Array.isArray(stop) && stop.length >= 9 ? stop[8] : inheritedDate));
+        const area = String(objectStop ? (stop.area || '') : (Array.isArray(stop) && stop.length >= 10 ? stop[9] || '' : inheritedArea) || '').trim().slice(0, 160);
+        return [time, name, note, categoryKey, tags, normalizeImageUrls(imageValue), normalizeGoogleMapsUrl(mapValue), foodSubcategory, stopDate, area];
+      });
+      const grouped = new Map();
+      normalizedStops.forEach(stop => {
+        if (!grouped.has(stop[8])) grouped.set(stop[8], { key: stop[8], date: stop[8], area: '', stops: [] });
+        grouped.get(stop[8]).stops.push(stop);
+      });
+      const days = [...grouped.values()].sort((a, b) => a.date.localeCompare(b.date));
+      days.forEach(day => {
+        day.area = [...new Set(day.stops.map(stop => stop[9]).filter(Boolean))].join(' · ');
+      });
+      const foodTypes = uniqueFoodTypes([...knownTypes, ...normalizedStops.filter(stop => stop[3] === 'food').map(stop => stop[7])]);
+      return { days, foodTypes };
     }
 
     function readSavedPlan() {
       try {
         const saved = localStorage.getItem(PLAN_STORAGE_KEY);
-        if (!saved) return JSON.parse(JSON.stringify(defaultDays));
-        return normalizePlan(JSON.parse(saved).days);
+        if (!saved) return JSON.parse(JSON.stringify(defaultPlan));
+        return normalizePlan(JSON.parse(saved));
       } catch {
         const status = document.querySelector('#save-status');
         if (status) status.textContent = 'Could not load this browser’s draft; the original itinerary is showing.';
-        return JSON.parse(JSON.stringify(defaultDays));
+        return JSON.parse(JSON.stringify(defaultPlan));
       }
     }
 
-    let days = readSavedPlan();
+    const loadedPlan = readSavedPlan();
+    let days = loadedPlan.days;
+    foodTypes = loadedPlan.foodTypes;
 
     const bookings = [
       ['teamlab', 'teamLab Planets', 'Thu · Nov 12 · 9:00 AM'],
@@ -811,11 +902,9 @@
       timeline.innerHTML = days.filter(day => activeDay === 'all' || day.key === activeDay).map(day => {
         const visibleStops = day.stops.map((stop, index) => ({ stop, index })).filter(({ stop }) => activeCategory === 'all' || stop[3] === activeCategory);
         if (!visibleStops.length && activeCategory !== 'all') return '';
-        const emptyDayMessage = visibleStops.length ? '' : '<p class="day-empty">No stops planned yet.' + (editMode ? ' Add a stop to start this day.' : '') + '</p>';
         return '<article class="day">' +
-          '<div class="day-head"><h2>' + escapeHtml(day.date) + '</h2><div class="day-head-tools"><span>' + escapeHtml(day.area) + '</span>' +
-            '<button class="day-add" type="button" data-add-day="' + escapeHtml(day.key) + '">Add stop</button></div></div>' +
-          '<div class="stops">' + emptyDayMessage + visibleStops.map(({ stop, index }) => {
+          '<div class="day-head"><h2>' + escapeHtml(displayDate(day.date)) + '</h2><span>' + escapeHtml(day.area) + '</span></div>' +
+          '<div class="stops">' + visibleStops.map(({ stop, index }) => {
             const hasPhoto = Boolean(stopPhotos[stop[1]] || stopImageUrls(stop).length);
             const category = categories[stop[3]];
             const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
@@ -835,6 +924,7 @@
               renderStopPhoto(stop) +
               '<div class="stop-copy"><h3>' + escapeHtml(stop[1]) + '</h3><p>' + escapeHtml(stop[2]) + '</p>' + mapLink + '</div>' +
               '<div class="stop-meta"><span class="activity-badge ' + category.className + '"><span class="activity-icon" aria-hidden="true">' + category.icon + '</span>' + category.label + '</span>' +
+              (stop[3] === 'food' && stop[7] ? '<span class="food-subcategory">' + escapeHtml(stop[7]) + '</span>' : '') +
               '<div class="chips">' + stop[4].map(tag => '<span class="chip ' + chipClass(tag) + '">' + escapeHtml(tag) + '</span>').join('') + '</div>' + actions + '</div>' +
               '</div>';
           }).join('') + '</div></article>';
@@ -842,7 +932,7 @@
     }
 
     function renderFilters() {
-      const items = [['all','All days'], ...days.map(day => [day.key, day.date.replace(' · ', ' ')])];
+      const items = [['all','All days'], ...days.map(day => [day.key, displayDate(day.date)])];
       filters.innerHTML = items.map(([key, label], i) => `<button class="filter ${i === 0 ? 'active' : ''}" data-day="${key}" aria-pressed="${i === 0}">${label}</button>`).join('');
       filters.onclick = event => {
         const button = event.target.closest('button');
@@ -857,6 +947,18 @@
         if (!button) return;
         setActiveCategory(button.dataset.category);
       };
+      renderFoodBuckets();
+    }
+
+    function renderFoodBuckets() {
+      const list = document.querySelector('#food-bucket-items');
+      const types = uniqueFoodTypes(foodTypes);
+      list.innerHTML = types.length ? types.map(type => {
+        const planned = days.some(day => day.stops.some(stop => stop[3] === 'food' && stop[7].toLocaleLowerCase() === type.toLocaleLowerCase()));
+        return '<span class="food-bucket ' + (planned ? 'planned' : '') + '" aria-label="' + escapeHtml(type) + (planned ? ', planned' : ', not planned') + '"><span class="food-bucket-check" aria-hidden="true">' + (planned ? '✓' : '·') + '</span>' + escapeHtml(type) + '</span>';
+      }).join('') : '<p class="day-empty">Add a food type to start your bucket list.</p>';
+      const datalist = document.querySelector('#food-subcategory-options');
+      datalist.innerHTML = types.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
     }
 
     function renderBookings() {
@@ -886,7 +988,7 @@
 
     function savePlan() {
       try {
-        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify({ version: 1, days }));
+        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify({ format: PLAN_FORMAT, version: 2, stops: serializeStops(), foodTypes }));
         setStatus('Draft saved in this browser. Export JSON to share it.');
         return true;
       } catch {
@@ -896,35 +998,44 @@
     }
 
     function openStopForm(dayKey, stopIndex = null) {
-      const daySelect = document.querySelector('#stop-day');
+      const dateField = document.querySelector('#stop-date');
+      const areaField = document.querySelector('#stop-area');
       const categorySelect = document.querySelector('#stop-category');
-      daySelect.innerHTML = days.map(day => '<option value="' + escapeHtml(day.key) + '">' + escapeHtml(day.date.replace(' · ', ' ')) + (day.area ? ' — ' + escapeHtml(day.area) : '') + '</option>').join('');
       if (!categorySelect.options.length) {
         categorySelect.innerHTML = Object.entries(categories).map(([key, category]) => '<option value="' + key + '">' + escapeHtml(category.label) + '</option>').join('');
       }
       editedStop = stopIndex === null ? null : { dayKey, stopIndex };
       const stop = stopIndex === null ? null : days.find(day => day.key === dayKey)?.stops[stopIndex];
       document.querySelector('#stop-dialog-title').textContent = stop ? 'Edit stop' : 'Add a stop';
-      daySelect.value = dayKey || days[0]?.key || '';
+      dateField.value = stop?.[8] || dayKey || days[0]?.date || '';
+      areaField.value = stop ? (stop[9] || '') : (days.find(day => day.key === dateField.value)?.area || '');
       document.querySelector('#stop-time').value = stop?.[0] || '';
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
       renderImageUrlRows(stopImageUrls(stop));
       document.querySelector('#stop-map-url').value = stop?.[6] || '';
       categorySelect.value = stop?.[3] || 'food';
+      const subcategoryField = document.querySelector('#stop-subcategory');
+      subcategoryField.value = stop?.[7] || '';
+      document.querySelector('#food-subcategory-field').hidden = categorySelect.value !== 'food';
       stopDialog.showModal();
       document.querySelector('#stop-time').focus();
     }
 
     function updatePlanAfterChange(dayKey, message) {
+      const regrouped = normalizePlan({ stops: serializeStops(), foodTypes });
+      days = regrouped.days;
+      foodTypes = regrouped.foodTypes;
       setActiveCategory('all');
-      setActiveDay(dayKey);
+      renderFilters();
+      setActiveDay(days.some(day => day.key === dayKey) ? dayKey : 'all');
       savePlan();
+      renderDays();
       if (message && saveStatus.textContent.startsWith('Draft saved')) setStatus(message);
     }
 
     function countStops(plan) {
-      return plan.reduce((total, day) => total + day.stops.length, 0);
+      return plan.days.reduce((total, day) => total + day.stops.length, 0);
     }
 
     function renderImageUrlRows(values) {
@@ -957,42 +1068,28 @@
         renderDays();
       });
 
-      const dayDialog = document.querySelector('#day-dialog');
-      const dayForm = document.querySelector('#day-form');
-      const dayLabelField = document.querySelector('#day-label');
-      dayLabelField.addEventListener('input', () => dayLabelField.setCustomValidity(''));
-      document.querySelector('#add-day').addEventListener('click', () => {
-        dayForm.reset();
-        dayDialog.showModal();
-        dayLabelField.focus();
-      });
-      document.querySelector('#cancel-day').addEventListener('click', () => dayDialog.close());
-      dayForm.addEventListener('submit', event => {
-        event.preventDefault();
-        if (days.length >= 100) {
-          setStatus('This itinerary supports up to 100 days.');
-          return;
-        }
-        const form = new FormData(dayForm);
-        const date = String(form.get('date') || '').trim();
-        const area = String(form.get('area') || '').trim();
-        if (days.some(day => day.date.toLocaleLowerCase() === date.toLocaleLowerCase())) {
-          dayLabelField.setCustomValidity('A day with this label already exists.');
-          dayLabelField.reportValidity();
-          return;
-        }
-        dayLabelField.setCustomValidity('');
-        let key;
-        do { key = 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
-        while (days.some(day => day.key === key));
-        days.push({ key, date, area, stops: [] });
-        dayDialog.close();
-        renderFilters();
-        updatePlanAfterChange(key, 'Day added to this browser. Export JSON to share it.');
-      });
-
-      document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? days[0].key : activeDay));
+      document.querySelector('#add-stop').addEventListener('click', () => openStopForm(activeDay === 'all' ? days[0]?.key : activeDay));
       document.querySelector('#cancel-stop').addEventListener('click', () => stopDialog.close());
+      const categorySelect = document.querySelector('#stop-category');
+      const subcategoryField = document.querySelector('#stop-subcategory');
+      const subcategoryWrap = document.querySelector('#food-subcategory-field');
+      categorySelect.addEventListener('change', () => {
+        const isFood = categorySelect.value === 'food';
+        subcategoryWrap.hidden = !isFood;
+        if (!isFood) subcategoryField.value = '';
+      });
+      document.querySelector('#food-bucket-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const input = document.querySelector('#food-bucket-name');
+        const value = input.value.trim();
+        if (!value) return input.focus();
+        if (value.length > 60) return;
+        if (!foodTypes.some(type => type.toLocaleLowerCase() === value.toLocaleLowerCase())) foodTypes.push(value);
+        input.value = '';
+        renderFoodBuckets();
+        savePlan();
+        setStatus('Food type added to the bucket list. Add a matching food stop to mark it planned.');
+      });
       const imageUrlRows = document.querySelector('#stop-image-url-rows');
       const mapUrlField = document.querySelector('#stop-map-url');
       imageUrlRows.addEventListener('input', event => event.target.setCustomValidity(''));
@@ -1011,9 +1108,9 @@
       stopForm.addEventListener('submit', event => {
         event.preventDefault();
         const form = new FormData(stopForm);
-        const targetDayKey = String(form.get('day'));
-        const targetDay = days.find(day => day.key === targetDayKey);
-        if (!targetDay) return;
+        const date = String(form.get('date') || '');
+        try { parseDateValue(date); } catch { document.querySelector('#stop-date').setCustomValidity('Choose a valid date.'); document.querySelector('#stop-date').reportValidity(); return; }
+        const area = String(form.get('area') || '').trim();
         let imageUrls;
         try {
           imageUrls = normalizeImageUrls(form.getAll('imageUrl').map(String));
@@ -1033,23 +1130,25 @@
           mapUrlField.reportValidity();
           return;
         }
-        const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), String(form.get('category')), []];
-        if (imageUrls.length || mapUrl) stop.push(imageUrls);
-        if (mapUrl) stop.push(mapUrl);
+        const category = String(form.get('category'));
+        const subcategory = category === 'food' ? String(form.get('subcategory') || '').trim().slice(0, 60) : '';
+        const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), category, [], imageUrls, mapUrl, subcategory, date, area];
+        if (subcategory && !foodTypes.some(type => type.toLocaleLowerCase() === subcategory.toLocaleLowerCase())) foodTypes.push(subcategory);
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
           if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
-          if (oldDay === targetDay) oldDay.stops[editedStop.stopIndex] = stop;
-          else {
-            oldDay.stops.splice(editedStop.stopIndex, 1);
-            targetDay.stops.push(stop);
-          }
+          oldDay.stops.splice(editedStop.stopIndex, 1);
+          if (oldDay.key === date) oldDay.stops.splice(editedStop.stopIndex, 0, stop);
+          else days.push({ key: date, date, area, stops: [stop] });
         } else {
-          targetDay.stops.push(stop);
+          const targetDay = days.find(day => day.key === date);
+          if (targetDay) targetDay.stops.push(stop);
+          else days.push({ key: date, date, area, stops: [stop] });
         }
         editedStop = null;
         stopDialog.close();
-        updatePlanAfterChange(targetDay.key, 'Stop saved in this browser. Export JSON to share it.');
+        document.querySelector('#stop-date').setCustomValidity('');
+        updatePlanAfterChange(date, 'Stop saved in this browser. Export JSON to share it.');
       });
 
       timeline.addEventListener('click', event => {
@@ -1069,8 +1168,6 @@
           imageDialog.showModal();
           return;
         }
-        const addButton = event.target.closest('[data-add-day]');
-        if (addButton) return openStopForm(addButton.dataset.addDay);
         const editButton = event.target.closest('[data-edit-index]');
         if (editButton) return openStopForm(editButton.dataset.editDay, Number(editButton.dataset.editIndex));
         const deleteButton = event.target.closest('[data-delete-index]');
@@ -1095,7 +1192,7 @@
       });
 
       document.querySelector('#export-plan').addEventListener('click', () => {
-        const data = { format: PLAN_FORMAT, version: 1, exportedAt: new Date().toISOString(), days };
+        const data = { format: PLAN_FORMAT, version: 2, exportedAt: new Date().toISOString(), stops: serializeStops(), foodTypes };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -1113,9 +1210,9 @@
         try {
           if (file.size > 1024 * 1024) throw new Error('The draft file is larger than 1 MB.');
           const data = JSON.parse(await file.text());
-          if (data?.format !== PLAN_FORMAT || data.version !== 1) throw new Error('That file is not a supported Tokyo trip draft.');
-          pendingImport = normalizePlan(data.days);
-          document.querySelector('#import-summary').textContent = 'This file contains ' + countStops(pendingImport) + ' stops across ' + pendingImport.length + ' trip dates. Review it before replacing this browser’s local itinerary.';
+          if (data?.format !== PLAN_FORMAT || ![1, 2].includes(data.version)) throw new Error('That file is not a supported Tokyo trip draft.');
+          pendingImport = normalizePlan(data);
+          document.querySelector('#import-summary').textContent = 'This file contains ' + countStops(pendingImport) + ' stops across ' + pendingImport.days.length + ' trip dates. Review it before replacing this browser’s local itinerary.';
           importDialog.showModal();
         } catch (error) {
           setStatus(error instanceof Error ? error.message : 'Could not read that draft file.');
@@ -1130,7 +1227,8 @@
       });
       document.querySelector('#apply-import').addEventListener('click', () => {
         if (!pendingImport) return;
-        days = pendingImport;
+        days = pendingImport.days;
+        foodTypes = pendingImport.foodTypes;
         pendingImport = null;
         importDialog.close();
         setActiveCategory('all');
@@ -1145,7 +1243,8 @@
         if (!window.confirm('Reset this browser to the original published itinerary? Export your draft first if you want to keep it.')) return;
         try {
           localStorage.removeItem(PLAN_STORAGE_KEY);
-          days = JSON.parse(JSON.stringify(defaultDays));
+          days = JSON.parse(JSON.stringify(defaultPlan.days));
+          foodTypes = [...defaultPlan.foodTypes];
           setActiveCategory('all');
           renderFilters();
           setActiveDay('all');
