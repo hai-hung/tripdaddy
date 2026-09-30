@@ -212,7 +212,6 @@
     .backups { margin-top: 16px; padding: 16px 18px; border: 1px dashed #a5a79f; border-radius: 16px; background: rgba(255,253,248,.55); }
     .backups strong { display: block; margin-bottom: 5px; }
     .backups p { margin: 0; color: var(--muted); font-size: .86rem; }
-    .photo-note { margin: 0 0 12px; padding: 0 2px; color: var(--muted); font-size: .875rem; }
     footer { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: .78rem; }
 
     @media (max-width: 900px) {
@@ -330,7 +329,6 @@
     <section class="controls" aria-label="Filter itinerary">
       <div class="filter-group"><h2 class="filter-label">Choose date</h2><nav class="toolbar day-filters" aria-label="Filter itinerary by date" id="filters"></nav></div>
       <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
-      <p class="photo-note">Photo tags: PLACE is the stop; AREA is nearby; DISH and REP are representative images, not photos from the named restaurant or venue.</p>
       <div class="plan-tools" aria-label="Edit your itinerary">
         <div class="plan-tools-main">
           <button class="plan-button primary" id="edit-toggle" type="button" aria-pressed="false">Edit itinerary</button>
@@ -371,7 +369,8 @@
       <div class="food-buckets" aria-label="Food types and planning status">
         <div class="food-bucket-items" id="food-bucket-items" aria-live="polite"></div>
         <form class="food-bucket-form" id="food-bucket-form">
-          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
+          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" list="food-bucket-suggestions" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
+          <datalist id="food-bucket-suggestions"></datalist>
           <button class="plan-button" type="submit">Add food type</button>
         </form>
       </div>
@@ -619,7 +618,11 @@
       ]}
     ];
 
-    const defaultPlan = normalizePlan({ days: defaultDaySource });
+    defaultDaySource.splice(2, 0, { key: 'nov8', date: '2026-11-08', area: 'Fuji', stops: [
+      ['? AM', 'Collect Car', '', 'travel', []],
+      ['3:00PM', 'Drive to Hoei Villas', 'Fujisan Panoramic View of Mt. Fuji, Kawaguchiko', 'travel', [], undefined, undefined, '', '2026-11-08', 'Fuji']
+    ]});
+    const defaultPlan = normalizePlan({ days: defaultDaySource, foodTypes: [] });
     let foodTypes = defaultPlan.foodTypes;
 
     const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
@@ -775,7 +778,7 @@
       days.forEach(day => {
         day.area = [...new Set(day.stops.map(stop => stop[9]).filter(Boolean))].join(' · ');
       });
-      const foodTypes = uniqueFoodTypes([...knownTypes, ...normalizedStops.filter(stop => stop[3] === 'food').map(stop => stop[7])]);
+      const foodTypes = uniqueFoodTypes(knownTypes);
       return { days, foodTypes };
     }
 
@@ -783,7 +786,13 @@
       try {
         const saved = localStorage.getItem(PLAN_STORAGE_KEY);
         if (!saved) return JSON.parse(JSON.stringify(defaultPlan));
-        return normalizePlan(JSON.parse(saved));
+        const data = JSON.parse(saved);
+        const plan = normalizePlan(data);
+        if (Number(data.version || 1) < 3) {
+          const plannedTypes = new Set(plan.days.flatMap(day => day.stops.filter(stop => stop[3] === 'food' && stop[7]).map(stop => stop[7].toLocaleLowerCase())));
+          plan.foodTypes = plan.foodTypes.filter(type => !plannedTypes.has(type.toLocaleLowerCase()));
+        }
+        return plan;
       } catch {
         const status = document.querySelector('#save-status');
         if (status) status.textContent = 'Could not load this browser’s draft; the original itinerary is showing.';
@@ -956,9 +965,16 @@
       list.innerHTML = types.length ? types.map(type => {
         const planned = days.some(day => day.stops.some(stop => stop[3] === 'food' && stop[7].toLocaleLowerCase() === type.toLocaleLowerCase()));
         return '<span class="food-bucket ' + (planned ? 'planned' : '') + '" aria-label="' + escapeHtml(type) + (planned ? ', planned' : ', not planned') + '"><span class="food-bucket-check" aria-hidden="true">' + (planned ? '✓' : '·') + '</span>' + escapeHtml(type) + '</span>';
-      }).join('') : '<p class="day-empty">Add a food type to start your bucket list.</p>';
-      const datalist = document.querySelector('#food-subcategory-options');
-      datalist.innerHTML = types.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
+      }).join('') : '<p class="day-empty">No food types added yet. Choose Edit itinerary to start your list.</p>';
+      const subcategoryDatalist = document.querySelector('#food-subcategory-options');
+      const bucketDatalist = document.querySelector('#food-bucket-suggestions');
+      const query = document.querySelector('#food-bucket-name')?.value.trim().toLocaleLowerCase() || '';
+      const alreadyAdded = new Set(types.map(type => type.toLocaleLowerCase()));
+      const existing = uniqueFoodTypes(days.flatMap(day => day.stops.filter(stop => stop[3] === 'food').map(stop => stop[7])));
+      const available = existing
+        .filter(type => !alreadyAdded.has(type.toLocaleLowerCase()) && (!query || type.toLocaleLowerCase().includes(query)));
+      bucketDatalist.innerHTML = available.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
+      subcategoryDatalist.innerHTML = existing.map(type => '<option value="' + escapeHtml(type) + '"></option>').join('');
     }
 
     function renderBookings() {
@@ -988,7 +1004,7 @@
 
     function savePlan() {
       try {
-        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify({ format: PLAN_FORMAT, version: 2, stops: serializeStops(), foodTypes }));
+        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify({ format: PLAN_FORMAT, version: 3, stops: serializeStops(), foodTypes }));
         setStatus('Draft saved in this browser. Export JSON to share it.');
         return true;
       } catch {
@@ -1090,6 +1106,7 @@
         savePlan();
         setStatus('Food type added to the bucket list. Add a matching food stop to mark it planned.');
       });
+      document.querySelector('#food-bucket-name').addEventListener('input', renderFoodBuckets);
       const imageUrlRows = document.querySelector('#stop-image-url-rows');
       const mapUrlField = document.querySelector('#stop-map-url');
       imageUrlRows.addEventListener('input', event => event.target.setCustomValidity(''));
@@ -1133,7 +1150,6 @@
         const category = String(form.get('category'));
         const subcategory = category === 'food' ? String(form.get('subcategory') || '').trim().slice(0, 60) : '';
         const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), category, [], imageUrls, mapUrl, subcategory, date, area];
-        if (subcategory && !foodTypes.some(type => type.toLocaleLowerCase() === subcategory.toLocaleLowerCase())) foodTypes.push(subcategory);
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
           if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
@@ -1192,7 +1208,7 @@
       });
 
       document.querySelector('#export-plan').addEventListener('click', () => {
-        const data = { format: PLAN_FORMAT, version: 2, exportedAt: new Date().toISOString(), stops: serializeStops(), foodTypes };
+        const data = { format: PLAN_FORMAT, version: 3, exportedAt: new Date().toISOString(), stops: serializeStops(), foodTypes };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -1210,8 +1226,12 @@
         try {
           if (file.size > 1024 * 1024) throw new Error('The draft file is larger than 1 MB.');
           const data = JSON.parse(await file.text());
-          if (data?.format !== PLAN_FORMAT || ![1, 2].includes(data.version)) throw new Error('That file is not a supported Tokyo trip draft.');
+          if (data?.format !== PLAN_FORMAT || ![1, 2, 3].includes(data.version)) throw new Error('That file is not a supported Tokyo trip draft.');
           pendingImport = normalizePlan(data);
+          if (data.version < 3) {
+            const plannedTypes = new Set(pendingImport.days.flatMap(day => day.stops.filter(stop => stop[3] === 'food' && stop[7]).map(stop => stop[7].toLocaleLowerCase())));
+            pendingImport.foodTypes = pendingImport.foodTypes.filter(type => !plannedTypes.has(type.toLocaleLowerCase()));
+          }
           document.querySelector('#import-summary').textContent = 'This file contains ' + countStops(pendingImport) + ' stops across ' + pendingImport.days.length + ' trip dates. Review it before replacing this browser’s local itinerary.';
           importDialog.showModal();
         } catch (error) {
