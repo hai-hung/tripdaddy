@@ -184,8 +184,9 @@
     .warning p { margin: 8px 0 0; color: var(--ink-2); font-size: .84rem; }
 
     .food-section { margin-top: 44px; }
+    .food-bucket-section { margin-top: 22px; }
     .section-title { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 16px; }
-    .section-title h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 600; letter-spacing: -.035em; }
+    .section-title h1, .section-title h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 600; letter-spacing: -.035em; }
     .section-title p { margin: 0; color: var(--muted); max-width: 460px; font-size: .9rem; }
     .food-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
     .food-card { overflow: hidden; background: var(--card); border: 1px solid var(--line); border-radius: 19px; }
@@ -295,21 +296,19 @@
   </header>
 
   <main class="shell">
-    <section class="intro" aria-labelledby="page-title">
-      <div class="intro-copy">
-        <div class="eyebrow">Tokyo food itinerary</div>
-        <h1 id="page-title">Eat well.<br />Waste no train rides.</h1>
-        <p class="dek">Tokyo days arranged by neighbourhood. Every stop is labeled as food, attraction or travel.</p>
-        <div class="quick-stats" aria-label="Trip summary">
-          <div class="stat"><b>7</b><span>Tokyo days</span></div>
-          <div class="stat"><b>5</b><span>priority bookings</span></div>
-          <div class="stat"><b>2</b><span>new attractions</span></div>
-        </div>
+    <section class="food-section food-bucket-section" aria-labelledby="food-buckets-title">
+      <div class="section-title">
+        <h1 id="food-buckets-title">Food bucket list</h1>
+        <p>Add a food type here or on a stop. A check means at least one matching food stop is planned.</p>
       </div>
-      <figure class="hero-img">
-        <img id="hero-image" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/View_from_Tokyo_Skytree_in_dusk.jpg?width=1200" alt="Tokyo at dusk viewed from the Skytree observation deck" />
-        <figcaption class="hero-label"><strong>Tokyo, one neighbourhood at a time</strong><span>Sumida · Ikebukuro · Ginza · Shibuya · Harajuku</span></figcaption>
-      </figure>
+      <div class="food-buckets" aria-label="Food types and planning status">
+        <div class="food-bucket-items" id="food-bucket-items" aria-live="polite"></div>
+        <form class="food-bucket-form" id="food-bucket-form">
+          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" list="food-bucket-suggestions" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
+          <datalist id="food-bucket-suggestions"></datalist>
+          <button class="plan-button" type="submit">Add food type</button>
+        </form>
+      </div>
     </section>
 
     <section class="accommodation" aria-labelledby="accommodation-title">
@@ -363,21 +362,6 @@
         </section>
       </aside>
     </div>
-
-    <section class="food-section" aria-labelledby="food-buckets-title">
-      <div class="section-title">
-        <h2 id="food-buckets-title">Food bucket list</h2>
-        <p>Add a food type here or on a stop. A check means at least one matching food stop is planned.</p>
-      </div>
-      <div class="food-buckets" aria-label="Food types and planning status">
-        <div class="food-bucket-items" id="food-bucket-items" aria-live="polite"></div>
-        <form class="food-bucket-form" id="food-bucket-form">
-          <input id="food-bucket-name" name="foodBucket" type="text" maxlength="60" list="food-bucket-suggestions" placeholder="Add a food type, e.g. yakitori" aria-label="New food type" />
-          <datalist id="food-bucket-suggestions"></datalist>
-          <button class="plan-button" type="submit">Add food type</button>
-        </form>
-      </div>
-    </section>
 
     <section class="food-section" aria-labelledby="food-title">
       <div class="section-title">
