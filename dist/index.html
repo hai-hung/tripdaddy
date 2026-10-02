@@ -869,6 +869,7 @@
             const actions = editMode
               ? '<div class="stop-actions">' +
                 '<button class="stop-action" type="button" data-edit-day="' + escapeHtml(day.key) + '" data-edit-index="' + index + '">Edit</button>' +
+                '<button class="stop-action" type="button" data-duplicate-day="' + escapeHtml(day.key) + '" data-duplicate-index="' + index + '">Duplicate</button>' +
                 '<button class="stop-action" type="button" data-move-day="' + escapeHtml(day.key) + '" data-move-index="' + index + '" data-direction="up"' + (index === 0 ? ' disabled' : '') + '>Move up</button>' +
                 '<button class="stop-action" type="button" data-move-day="' + escapeHtml(day.key) + '" data-move-index="' + index + '" data-direction="down"' + (index === day.stops.length - 1 ? ' disabled' : '') + '>Move down</button>' +
                 '<button class="stop-action delete" type="button" data-delete-day="' + escapeHtml(day.key) + '" data-delete-index="' + index + '">Remove</button>' +
@@ -1177,6 +1178,19 @@
           activeImageAlt = imageButton.dataset.imageAlt || '';
           updateImageGallery();
           imageDialog.showModal();
+          return;
+        }
+        const duplicateButton = event.target.closest('[data-duplicate-index]');
+        if (duplicateButton) {
+          const day = days.find(item => item.key === duplicateButton.dataset.duplicateDay);
+          const index = Number(duplicateButton.dataset.duplicateIndex);
+          const original = day?.stops[index];
+          if (!day || !original) return;
+          const duplicate = [...original];
+          duplicate[4] = [...original[4]];
+          duplicate[5] = [...stopImageUrls(original)];
+          day.stops.splice(index, 0, duplicate);
+          updatePlanAfterChange(day.key, 'Stop duplicated before the original.');
           return;
         }
         const editButton = event.target.closest('[data-edit-index]');
