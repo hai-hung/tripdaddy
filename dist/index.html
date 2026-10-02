@@ -63,7 +63,8 @@
     .hero-label span { opacity: .9; font-size: .875rem; }
 
     .toolbar { display: flex; align-items: center; gap: 9px; overflow-x: auto; padding: 8px 2px 18px; scrollbar-width: none; }
-    .controls { padding: 14px 16px 2px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
+    .filters-dock { position: sticky; top: 69px; z-index: 9; padding: 10px 16px 0; margin: 0 0 14px; border: 1px solid var(--line); border-radius: 16px; background: rgba(247,243,235,.96); box-shadow: 0 8px 22px rgba(16,38,63,.08); backdrop-filter: blur(14px); }
+    .controls { padding: 0 16px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
     .plan-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0 13px; border-top: 1px solid #e9e5dc; }
     .plan-tools-main, .plan-tools-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .plan-tools-actions[hidden], .plan-instructions[hidden] { display: none !important; }
@@ -228,6 +229,9 @@
       .stat { padding: 10px; }
       .stat b { font-size: 1.15rem; }
       .layout { gap: 16px; }
+      .filters-dock { padding: 7px 10px 0; }
+      .filters-dock .filter-group { grid-template-columns: 74px minmax(0, 1fr); gap: 8px; }
+      .filters-dock .filter-label { font-size: .7rem; letter-spacing: .04em; }
       .day-head { display: block; padding: 15px 16px; }
       .stops { padding: 4px 16px 10px; }
       .filter-group { grid-template-columns: 1fr; gap: 0; }
@@ -315,9 +319,11 @@
       </table>
     </section>
 
-    <section class="controls" aria-label="Filter itinerary">
-      <div class="filter-group"><h2 class="filter-label">Choose dates</h2><div class="date-multiselect" aria-label="Filter itinerary by dates" id="filters"></div></div>
-      <div class="filter-group"><h2 class="filter-label">Show purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
+    <section class="filters-dock" aria-label="Filter itinerary">
+      <div class="filter-group"><h2 class="filter-label">Dates</h2><div class="date-multiselect" aria-label="Filter itinerary by dates" id="filters"></div></div>
+      <div class="filter-group"><h2 class="filter-label">Purpose</h2><nav class="toolbar type-filters" aria-label="Filter itinerary by purpose" id="type-filters"></nav></div>
+    </section>
+    <section class="controls" aria-label="Itinerary editing tools">
       <div class="plan-tools" aria-label="Edit your itinerary">
         <div class="plan-tools-main">
           <button class="plan-button primary" id="edit-toggle" type="button" aria-pressed="false">Edit itinerary</button>
