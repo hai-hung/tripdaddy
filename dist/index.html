@@ -230,14 +230,16 @@
       .stat b { font-size: 1.15rem; }
       .layout { gap: 16px; }
       .filters-dock { padding: 7px 10px 0; }
-      .filters-dock .filter-group { grid-template-columns: 74px minmax(0, 1fr); gap: 8px; }
+      .filters-dock .filter-group { grid-template-columns: 64px minmax(0, 1fr); gap: 8px; }
       .filters-dock .filter-label { font-size: .7rem; letter-spacing: .04em; }
       .day-head { display: block; padding: 15px 16px; }
       .stops { padding: 4px 16px 10px; }
       .filter-group { grid-template-columns: 1fr; gap: 0; }
       .filter-group + .filter-group { padding-top: 4px; }
       .date-multiselect { width: 100%; padding: 7px 0 10px; }
-      .toolbar.type-filters { padding: 7px 0 10px; }
+      .toolbar.type-filters { flex-wrap: nowrap; overflow-x: auto; min-width: 0; gap: 6px; padding: 4px 0 8px; scrollbar-width: none; }
+      .toolbar.type-filters::-webkit-scrollbar { display: none; }
+      .toolbar.type-filters .filter { flex: 0 0 auto; min-height: 40px; padding: 6px 9px; font-size: .76rem; }
       .stop { grid-template-columns: 50px minmax(0, 1fr); gap: 8px; padding: 13px 0; align-items: start; }
       .stop.with-photo { grid-template-columns: 56px 58px minmax(0, 1fr); }
       .time { white-space: normal; }
