@@ -404,8 +404,8 @@
       <form id="stop-form">
         <div class="stop-form-grid">
           <div class="form-field">
-            <label for="stop-date">Date</label>
-            <input id="stop-date" name="date" type="date" required />
+            <label for="stop-date">Date (optional)</label>
+            <input id="stop-date" name="date" type="date" />
           </div>
           <div class="form-field">
             <label for="stop-area">Area / neighbourhood (optional)</label>
@@ -413,8 +413,8 @@
             <p class="form-hint">Basic HTML is supported, such as &lt;b&gt;Shibuya&lt;/b&gt;.</p>
           </div>
           <div class="form-field">
-            <label for="stop-time">Time</label>
-            <input id="stop-time" name="time" type="text" maxlength="40" placeholder="e.g. 2:30 PM" required />
+            <label for="stop-time">Time (optional)</label>
+            <input id="stop-time" name="time" type="text" maxlength="40" placeholder="e.g. 2:30 PM" />
           </div>
           <div class="form-field full">
             <label for="stop-name">Place or activity</label>
@@ -562,73 +562,7 @@
       'SABASU · Akasaka': { id: 'pizza', type: 'DISH' }
     };
 
-    const defaultDaySource = [
-      { key: 'nov6', date: 'Fri · Nov 6', area: 'Sumida & Kinshicho', stops: [
-        ['1:35 PM', 'Arrive Tokyo Hanada Airport', 'Welcome to Japan', 'travel', [], ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB28ALnTYEoXk2fDq0pszlxI0tCZdd6kwypW_-VR8v-Q&s=10']],
-        ['3:00PM', 'Check in Hotel - Yoshii House', '5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)', 'travel', [], ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606007.jpg?k=0db1e9c68e7091da02f4196a98bcd0d21d16256b7b17611c9c343032cdde1019&o='], 'https://maps.app.goo.gl/kWKcrPnEj1jzReHL6']
-      ]},
-      { key: 'nov7', date: 'Sat · Nov 7', area: 'Kuramae, Asakusabashi & Asakusa', stops: [
-        ['10:00 AM', 'Leaves Coffee Roasters', '[Coffee] Former professional boxer Yasuo Ishii is the representative and roaster of the cafe.', 'food', [], ['https://cdn.shopify.com/s/files/1/0574/3286/6889/files/location-roasters_743d4c16-cddc-46c2-9825-f3328a42abe2.jpg?v=1765885895', 'https://cdn.shopify.com/s/files/1/0574/3286/6889/files/textpage-aboutus2-2025.jpg?v=1765721520'], 'https://maps.app.goo.gl/xuqsxetaHEdu2hjn6'],
-        ['11:30 AM', 'Motenashi Kuroki', '[Ramen] 4.2 star - 2,125 Google reviews', 'food', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmlrypVlOWGvDed-vyw8iBGuWJB9rLLNF1GR-vWaMUP0VA9tkAi24S1_WbwUbwUBe4W826n4iMfE3oBQNoVlx0n5u7pD0PW_RyVC46qHrrg9vZJ-GnkROgFPg6SRElIIJyG9603I0Z78Mo=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm8rrSosG4v7gUGBq7Qmkst8cf130mVDG7GNZK0LZVVEoGVenbMAcS4X68ZHXsA9sPprsb8fbrB7SPlp60FUN0W1ubfdroeISPpkzmD2L6zDxWxbdCILhDpcMX_ZytCxS_QfLVk=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmOa4PMhWum-kup71yrsOI66h1DrEz-lZ77CvwuRSecVKpF2EQjQukr5NjnpMvFAtqbI9-i3FWRpTIzFpgwkMAKjSq1Hj2xI64zj1LNpeazEKQHW6xYnKRk18W7l1I5w6d2pHlK9OdWwBo4=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/SkwnzHiVvcLWbmqQ7']
-      ]},
-      { key: 'nov10', date: 'Tue · Nov 10', area: '', stops: [
-        ['? AM', 'Drive - Kamakura 镰仓', 'From Hut in Kone: 1h 20m', 'fun', [], undefined, 'https://maps.app.goo.gl/oWnBBSbGgn5Md9As7', '', '2026-11-10', ''],
-        ['AM', 'Shichirigahama Beach', '', 'fun', [], ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAA2-l-XtDKNVdq98vKcR_-toOGuCRzVh1Z-IbrzORCg&s=10'], 'https://maps.app.goo.gl/gLJj31spthaFZG2TA', '', '2026-11-10', ''],
-        ['? PM', 'Izumo Ikebukuro', 'Unagi dinner near the Toshima hotel; consider sharing the large bowl.', 'food', []],
-        ['6:00 PM', 'Collect Luggage - Baggage storage Tokyo Sky Tree', '', 'travel', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk9HHwYuWkkzIZZ7_ksxKHa-YM00nV0qZd6tobElJD6rYwM2cTSnr7vaD2QqqSaerMS4zm-wBMKTSHXvNyxo-6JeRCiunQZJRajYEdJGtjRrvj5EzSXmfsGLg7IzU0CkccZvANY=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/Y8h53WizvYDpWUEEA', '', '2026-11-10', ''],
-        ['7:00 PM', 'Put Luggage - Airbnb Toshima K', '2-chōme-45-12 Kamiikebukuro YJビル 3F, Toshima City, Tokyo Prefecture 170-0012, Japan', 'travel', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl5pce2RUP3xtNS8btV2E3eN0UvvvYcEVYYpYFk4naz4QYdA5nblH9vQhb8a_s2Vyxlkh5FAGAoMu9BHf3yrM0Uyx1kG6fuOlLjI12MjeDqPUk6OJLnEH4B5tV_5p_fmOkPpcGloykthJ99=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn_uZgvNbmsNqVxxbEYIxPfGq16CCDUk55wrkm5RMMts4ifGIt4Z4mj4rs0A6S8eRukKm6SbJoia3focbDP8H775CHDSxYVD_eOKzddKjXR_Mv0RPM0fAMG4yjsfgDbx6leTc4=s1360-w1360-h1020-rw'], 'https://www.google.com/maps/place/YJ%E3%83%93%E3%83%AB/data=!4m2!3m1!1s0x0:0x71a1cee878f4594?sa=X&ved=1t:2428&ictx=111', '', '2026-11-10', ''],
-        ['? PM', 'Find Nearby Petrol Station', '', 'travel', [], undefined, undefined, '', '2026-11-10', ''],
-        ['8:00 PM', 'Return Car - トヨタレンタカー 池袋東口店', 'Addr: 3 Chome-12-8 Higashiikebukuro, Toshima City, Tokyo 170-0013, Japan\nRemarks: Close to Nov 10 Airbnb', 'travel', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlhmXfnU5Dp4gusr3r6Z_GCXoi-ebHgJob654Mqs5Yzxprr-EPWcFidnSKiKgEVnGR7eG6Zl24NbUWlukY6xmkskszxl3xmKhlqUnFx970RwJr85F5ZKcK6nvIrXkg09wmg2Jn_M-NoBnir=s1360-w1360-h1020-rw', 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn48kHIqkTFzAjhjsa1u-mMpLpLzLuFc-u6iVjLhsjIicN0pvYVeZdXQk4zCsuDDFiNOF1kBs9qA8eb_bj3yzjXrG3cSa4vk-4lQq56ZZTQDHw2bc3rzlpFAf_8rn7IFxsiYdeM=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/ahN89xgqC3ZFvkkP9', '', '2026-11-10', '']
-      ]},
-      { key: 'nov11', date: 'Wed · Nov 11', area: 'Ikebukuro', stops: [
-        ['8:00 AM', 'Shinpachi Shokudo', 'Grilled-fish breakfast at the Ikebukuro West branch.', 'food', []],
-        ['11:00 AM', 'Espresso D Works', 'Cafe brunch beside Sunshine City.', 'food', []],
-        ['12:45 PM', 'Sunshine City', 'Shopping at the mall, Pokemon Center and Animate.', 'fun', []],
-        ['3:30 PM', 'Gashapon Department Store', 'Browse capsule toys and try the machines.', 'fun', []],
-        ['5:30 PM', 'Kikanbo Ikebukuro', 'Spicy miso ramen before the main dinner queue.', 'food', []]
-      ]},
-      { key: 'nov12', date: 'Thu · Nov 12', area: 'Toyosu, Marunouchi & Ginza', stops: [
-        ['9:00 AM', 'teamLab Planets', 'Timed entry to the immersive art museum. Allow 90–105 minutes.', 'fun', ['New', 'Book']],
-        ['11:45 AM', 'Nemuro Hanamaru · KITTE', 'Sushi lunch at the Marunouchi branch.', 'food', []],
-        ['1:30 PM', 'Ginza & Yurakucho', 'Shopping and department-store browsing.', 'fun', []],
-        ['3:30 PM', 'Oosumi Tamaya', 'Fruit daifuku snack in Ginza.', 'food', []],
-        ['4:00 PM', 'More Ginza shopping', 'Continue browsing before dinner.', 'fun', []],
-        ['5:30 PM', 'Tempura Abe Ginza', 'Tempura dinner; reserve ahead.', 'food', ['Book']]
-      ]},
-      { key: 'nov13', date: 'Fri · Nov 13', area: 'Shibuya', stops: [
-        ['8:30 AM', 'Komeraku', 'Chameshi and ochazuke breakfast.', 'food', ['Picture 2']],
-        ['10:00 AM', 'Shibuya shops', 'Browse around the station and Scramble Crossing.', 'fun', []],
-        ['10:45 AM', 'Scramble Crossing', 'See the famous crossing from the street or an upper floor.', 'fun', []],
-        ['11:30 AM', 'Hikiniku to Come', 'Hamburg rice lunch. Online registration only.', 'food', ['Book']],
-        ['2:30 PM', 'Kuro Mame or Acid Coffee', 'Choose the cafe closest to the shopping route.', 'food', []],
-        ['4:30 PM', 'Optional Shibuya Sky', 'Rooftop city views; book a timed slot if interested.', 'fun', ['Optional', 'Book']],
-        ['6:30 PM', 'Moheji · Scramble Square', 'Monjayaki dinner directly above the station.', 'food', []]
-      ]},
-      { key: 'nov14', date: 'Sat · Nov 14', area: 'Harajuku, Omotesando & Akasaka', stops: [
-        ['10:00 AM', 'mipig cafe Harajuku', 'Micro-pig visit. Reserve ahead and arrive 10 minutes early.', 'fun', ['New', 'Book']],
-        ['11:10 AM', 'AMAM DACOTAN / I’m donut?', 'Bakery and doughnut stop. Use mobile ordering if offered.', 'food', []],
-        ['12:00 PM', 'Tonkatsu Maisen Aoyama', 'Tonkatsu lunch. Arrive close to opening to reduce the queue.', 'food', []],
-        ['1:45 PM', 'Cat Street & Omotesando', 'Walk and shop along this corridor.', 'fun', []],
-        ['4:00 PM', 'Jean-Paul Hévin', 'Chocolate drink break in Omotesando Hills.', 'food', ['Picture 2']],
-        ['5:00 PM', 'Travel to Akasaka', 'Allow time to get to dinner.', 'travel', []],
-        ['7:00 PM', 'SABASU · Akasaka', 'Reserved sourdough-pizza dinner.', 'food', ['Book']]
-      ]},
-      { key: 'nov15', date: 'Sun · Nov 15', area: 'Departure', stops: [
-        ['7:00 AM', 'Breakfast near the hotel', 'Eat before heading to the airport.', 'food', []],
-        ['8:00 AM', 'Leave for Haneda', 'Airport transfer for the 10:45 flight.', 'travel', []]
-      ]}
-    ];
-
-    defaultDaySource.splice(2, 0, { key: 'nov8', date: '2026-11-08', area: 'Fuji', stops: [
-      ['8:00 AM', 'Store Baggage - Baggage storage Tokyo Sky Tree', '', 'travel', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk9HHwYuWkkzIZZ7_ksxKHa-YM00nV0qZd6tobElJD6rYwM2cTSnr7vaD2QqqSaerMS4zm-wBMKTSHXvNyxo-6JeRCiunQZJRajYEdJGtjRrvj5EzSXmfsGLg7IzU0CkccZvANY=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/Y8h53WizvYDpWUEEA', '', '2026-11-08', ''],
-      ['9:00 AM', 'Collect Car - トヨタレンタカー 浅草橋店', '5 Chome-22-5 Asakusabashi, Taito City, Tokyo 111-0053, Japan\nDrive to Fuji: 1h 30m', 'travel', [], ['https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlTRx8BxIrvQW_2YMYEBFGgmJju-q5J33gvy3Hxh7i6kecWpNSHAt2w4dWRA-qTFIazi443-O_lQtqyfLzdaVvXk5xYFiOzBjJiOTVLXk_DoMIkyWudBOGxOwk7Rnk3swbcKHZVBnHtLb8S=s1360-w1360-h1020-rw'], 'https://maps.app.goo.gl/vb6X1ZgEVJo9N2Bt7', '', '2026-11-08', 'Fuji'],
-      ['? PM', 'Drive to Fuji', '', 'travel', [], ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBer6lEPOyCpKh_hkUu3FJX8yfej0_fCK4eyeJd_MEKQ&s=10'], undefined, '', '2026-11-08', ''],
-      ['3:00PM', 'Check In - Hoei Villas (Fuji)', '4PM check-in, 10AM check-out<br/>\n<a href="https://www.airbnb.co.uk/rooms/1188102290479570321?unique_share_id=4ee49f6f-3fb2-4b00-8ebb-c3a2469fb55c&viralityEntryPoint=1&s=76&source_impression_id=p3_1790945084_P3y-f_a2W0977dg2">Airbnb Listing</a>', 'travel', [], ['https://a0.muscache.com/im/pictures/hosting/Hosting-1188102290479570321/original/16de67a6-1476-47f2-b6fc-af8b1d981322.jpeg?im_w=720', 'https://a0.muscache.com/im/pictures/hosting/Hosting-1188102290479570321/original/1d17db7c-b458-4e8f-8c1c-d96f7015a936.jpeg?im_w=720', 'https://a0.muscache.com/im/pictures/miso/Hosting-1188102290479570321/original/3b8a69e5-4276-4576-b4ce-4e4c7e11bd91.jpeg?im_w=1200'], 'https://maps.app.goo.gl/3ngVnfW6ostvRN5e6', '', '2026-11-08', 'Fuji']
-    ]});
-    defaultDaySource.splice(3, 0, { key: 'nov9', date: '2026-11-09', area: 'Fuji', stops: [
-      ['? AM', 'Hut in Hakone', 'From Hoei Villa: 50 mins<br/>\n<a href="https://www.airbnb.co.uk/rooms/1188102290479570321?unique_share_id=4ee49f6f-3fb2-4b00-8ebb-c3a2469fb55c&viralityEntryPoint=1&s=76&source_impression_id=p3_1790945084_P3y-f_a2W0977dg2">Airbnb Listing</a>', 'travel', [], ['https://a0.muscache.com/im/pictures/miso/Hosting-741702911747259129/original/63730124-29dc-4156-bc36-bce41547168d.jpeg?im_w=720'], 'https://maps.app.goo.gl/9BEAcrJHB1cSBwhdA?g_st=iw', '', '2026-11-09', 'Fuji']
-    ]});
-    const defaultPlan = normalizePlan({ days: defaultDaySource, foodTypes: ['烤肉', 'Sushi', 'Tempura', '咖喱饭', 'sabu-sabu', 'Omakase', 'Chameshi 茶饭', 'Okonomiyaki', 'Ramen', 'Unagi'] });
+    const defaultPlan = normalizePlan({"stops":[{"time":"1:35 PM","name":"Arrive Tokyo Hanada Airport","note":"Welcome to Japan","category":"travel","tags":[],"imageUrls":["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB28ALnTYEoXk2fDq0pszlxI0tCZdd6kwypW_-VR8v-Q&s=10"],"mapUrl":"","subcategory":"","date":"2026-11-06","area":"Sumida & Kinshicho"},{"time":"3:00PM","name":"Check in Hotel - Yoshii House","note":"5 mins away from\nKeiseihikifune Station (Keisei Oshiage Line)","category":"travel","tags":[],"imageUrls":["https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606340.jpg?k=f38c4128d79176592977c332b02785ea6c6a0f67aa9a35cbe63931933a69c095&o=","https://cf.bstatic.com/xdata/images/hotel/max1024x768/780606007.jpg?k=0db1e9c68e7091da02f4196a98bcd0d21d16256b7b17611c9c343032cdde1019&o="],"mapUrl":"https://maps.app.goo.gl/kWKcrPnEj1jzReHL6","subcategory":"","date":"2026-11-06","area":"Sumida & Kinshicho"},{"time":"10:00 AM","name":"Leaves Coffee Roasters","note":"[Coffee] Former professional boxer Yasuo Ishii is the representative and roaster of the cafe.","category":"food","tags":[],"imageUrls":["https://cdn.shopify.com/s/files/1/0574/3286/6889/files/location-roasters_743d4c16-cddc-46c2-9825-f3328a42abe2.jpg?v=1765885895","https://cdn.shopify.com/s/files/1/0574/3286/6889/files/textpage-aboutus2-2025.jpg?v=1765721520"],"mapUrl":"https://maps.app.goo.gl/xuqsxetaHEdu2hjn6","subcategory":"Coffee","date":"2026-11-07","area":"Kuramae, Asakusabashi & Asakusa"},{"time":"11:30 AM","name":"Motenashi Kuroki","note":"[Ramen] 4.2 star - 2,125 Google reviews","category":"food","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmlrypVlOWGvDed-vyw8iBGuWJB9rLLNF1GR-vWaMUP0VA9tkAi24S1_WbwUbwUBe4W826n4iMfE3oBQNoVlx0n5u7pD0PW_RyVC46qHrrg9vZJ-GnkROgFPg6SRElIIJyG9603I0Z78Mo=s1360-w1360-h1020-rw","https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm8rrSosG4v7gUGBq7Qmkst8cf130mVDG7GNZK0LZVVEoGVenbMAcS4X68ZHXsA9sPprsb8fbrB7SPlp60FUN0W1ubfdroeISPpkzmD2L6zDxWxbdCILhDpcMX_ZytCxS_QfLVk=s1360-w1360-h1020-rw","https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmOa4PMhWum-kup71yrsOI66h1DrEz-lZ77CvwuRSecVKpF2EQjQukr5NjnpMvFAtqbI9-i3FWRpTIzFpgwkMAKjSq1Hj2xI64zj1LNpeazEKQHW6xYnKRk18W7l1I5w6d2pHlK9OdWwBo4=s1360-w1360-h1020-rw"],"mapUrl":"https://maps.app.goo.gl/SkwnzHiVvcLWbmqQ7","subcategory":"Ramen","date":"2026-11-07","area":"Kuramae, Asakusabashi & Asakusa"},{"time":"8:00 AM","name":"Store Luggage - Baggage storage Tokyo Sky Tree","note":"","category":"travel","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk9HHwYuWkkzIZZ7_ksxKHa-YM00nV0qZd6tobElJD6rYwM2cTSnr7vaD2QqqSaerMS4zm-wBMKTSHXvNyxo-6JeRCiunQZJRajYEdJGtjRrvj5EzSXmfsGLg7IzU0CkccZvANY=s1360-w1360-h1020-rw"],"mapUrl":"https://maps.app.goo.gl/Y8h53WizvYDpWUEEA","subcategory":"","date":"2026-11-08","area":""},{"time":"9:00 AM","name":"Collect Car - トヨタレンタカー 浅草橋店","note":"5 Chome-22-5 Asakusabashi, Taito City, Tokyo 111-0053, Japan\nDrive to Fuji: 1h 30m","category":"travel","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlTRx8BxIrvQW_2YMYEBFGgmJju-q5J33gvy3Hxh7i6kecWpNSHAt2w4dWRA-qTFIazi443-O_lQtqyfLzdaVvXk5xYFiOzBjJiOTVLXk_DoMIkyWudBOGxOwk7Rnk3swbcKHZVBnHtLb8S=s1360-w1360-h1020-rw"],"mapUrl":"https://maps.app.goo.gl/vb6X1ZgEVJo9N2Bt7","subcategory":"","date":"2026-11-08","area":"Fuji"},{"time":"? PM","name":"Drive to Fuji","note":"","category":"travel","tags":[],"imageUrls":["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBer6lEPOyCpKh_hkUu3FJX8yfej0_fCK4eyeJd_MEKQ&s=10"],"mapUrl":"","subcategory":"","date":"2026-11-08","area":""},{"time":"3:00PM","name":"Check In - Hoei Villas (Fuji)","note":"4PM check-in, 10AM check-out<br/>\n<a href=\"https://www.airbnb.co.uk/rooms/1188102290479570321?unique_share_id=4ee49f6f-3fb2-4b00-8ebb-c3a2469fb55c&viralityEntryPoint=1&s=76&source_impression_id=p3_1790945084_P3y-f_a2W0977dg2\">Airbnb Listing</a>","category":"travel","tags":[],"imageUrls":["https://a0.muscache.com/im/pictures/hosting/Hosting-1188102290479570321/original/16de67a6-1476-47f2-b6fc-af8b1d981322.jpeg?im_w=720","https://a0.muscache.com/im/pictures/hosting/Hosting-1188102290479570321/original/1d17db7c-b458-4e8f-8c1c-d96f7015a936.jpeg?im_w=720","https://a0.muscache.com/im/pictures/miso/Hosting-1188102290479570321/original/3b8a69e5-4276-4576-b4ce-4e4c7e11bd91.jpeg?im_w=1200"],"mapUrl":"https://maps.app.goo.gl/3ngVnfW6ostvRN5e6","subcategory":"","date":"2026-11-08","area":"Fuji"},{"time":"? AM","name":"Hut in Hakone","note":"From Hoei Villa: 50 mins<br/>\n<a href=\"https://www.airbnb.co.uk/rooms/1188102290479570321?unique_share_id=4ee49f6f-3fb2-4b00-8ebb-c3a2469fb55c&viralityEntryPoint=1&s=76&source_impression_id=p3_1790945084_P3y-f_a2W0977dg2\">Airbnb Listing</a>","category":"travel","tags":[],"imageUrls":["https://a0.muscache.com/im/pictures/miso/Hosting-741702911747259129/original/63730124-29dc-4156-bc36-bce41547168d.jpeg?im_w=720"],"mapUrl":"https://maps.app.goo.gl/9BEAcrJHB1cSBwhdA?g_st=iw","subcategory":"","date":"2026-11-09","area":"Fuji"},{"time":"? AM","name":"Drive - Kamakura 镰仓","note":"From Hut in Kone: 1h 20m","category":"fun","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWleMTW8wsWykNax5LODGmCWgW2Xd6ZEEX4-E0GrE0LhXwv6ItXHNTe2EN-CZOH-_jaoWn8Bf2ZhS4onIVhcFOZ3QwsZhblQyh4tTj96FtRfBGwDtJ75iETJEQ3Mwi-grZo_x85JfA=w243-h304-n-k-no-nu","https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkQJG-GdcRGcVGR9DnXMKbeIEbBvLApFlf9JfmVkO1mFATgxPSjYv1LtWXmm3QXgv2fBo3ITBbJ6Vbsm6ipXzozvldSXHkAguaOkG0EINnYs5OfFiBjnUphsrsHFHgbknjboA7UWQ=w243-h304-n-k-no-nu"],"mapUrl":"https://maps.app.goo.gl/oWnBBSbGgn5Md9As7","subcategory":"","date":"2026-11-10","area":""},{"time":"AM","name":"Shichirigahama Beach","note":"","category":"fun","tags":[],"imageUrls":["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAA2-l-XtDKNVdq98vKcR_-toOGuCRzVh1Z-IbrzORCg&s=10"],"mapUrl":"https://maps.app.goo.gl/gLJj31spthaFZG2TA","subcategory":"","date":"2026-11-10","area":""},{"time":"? PM","name":"Izumo Ikebukuro","note":"Unagi dinner near the Toshima hotel; consider sharing the large bowl.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Unagi","date":"2026-11-10","area":""},{"time":"6:00 PM","name":"Collect Luggage - Baggage storage Tokyo Sky Tree","note":"","category":"travel","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk9HHwYuWkkzIZZ7_ksxKHa-YM00nV0qZd6tobElJD6rYwM2cTSnr7vaD2QqqSaerMS4zm-wBMKTSHXvNyxo-6JeRCiunQZJRajYEdJGtjRrvj5EzSXmfsGLg7IzU0CkccZvANY=s1360-w1360-h1020-rw"],"mapUrl":"https://maps.app.goo.gl/Y8h53WizvYDpWUEEA","subcategory":"","date":"2026-11-10","area":""},{"time":"7:00 PM","name":"Put Luggage - Airbnb Toshima K","note":"2-chōme-45-12 Kamiikebukuro YJビル 3F, Toshima City, Tokyo Prefecture 170-0012, Japan","category":"travel","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl5pce2RUP3xtNS8btV2E3eN0UvvvYcEVYYpYFk4naz4QYdA5nblH9vQhb8a_s2Vyxlkh5FAGAoMu9BHf3yrM0Uyx1kG6fuOlLjI12MjeDqPUk6OJLnEH4B5tV_5p_fmOkPpcGloykthJ99=s1360-w1360-h1020-rw","https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn_uZgvNbmsNqVxxbEYIxPfGq16CCDUk55wrkm5RMMts4ifGIt4Z4mj4rs0A6S8eRukKm6SbJoia3focbDP8H775CHDSxYVD_eOKzddKjXR_Mv0RPM0fAMG4yjsfgDbx6leTc4=s1360-w1360-h1020-rw"],"mapUrl":"https://www.google.com/maps/place/YJ%E3%83%93%E3%83%AB/data=!4m2!3m1!1s0x0:0x71a1cee878f4594?sa=X&ved=1t:2428&ictx=111","subcategory":"","date":"2026-11-10","area":""},{"time":"? PM","name":"Find Nearby Petrol Station","note":"","category":"travel","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-10","area":""},{"time":"8:00 PM","name":"Return Car - トヨタレンタカー 池袋東口店","note":"Addr: 3 Chome-12-8 Higashiikebukuro, Toshima City, Tokyo 170-0013, Japan\nRemarks: Close to Nov 10 Airbnb","category":"travel","tags":[],"imageUrls":["https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlhmXfnU5Dp4gusr3r6Z_GCXoi-ebHgJob654Mqs5Yzxprr-EPWcFidnSKiKgEVnGR7eG6Zl24NbUWlukY6xmkskszxl3xmKhlqUnFx970RwJr85F5ZKcK6nvIrXkg09wmg2Jn_M-NoBnir=s1360-w1360-h1020-rw","https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn48kHIqkTFzAjhjsa1u-mMpLpLzLuFc-u6iVjLhsjIicN0pvYVeZdXQk4zCsuDDFiNOF1kBs9qA8eb_bj3yzjXrG3cSa4vk-4lQq56ZZTQDHw2bc3rzlpFAf_8rn7IFxsiYdeM=s1360-w1360-h1020-rw"],"mapUrl":"https://maps.app.goo.gl/ahN89xgqC3ZFvkkP9","subcategory":"","date":"2026-11-10","area":""},{"time":"8:00 AM","name":"Shinpachi Shokudo","note":"Grilled-fish breakfast at the Ikebukuro West branch.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Grilled fish","date":"2026-11-11","area":"Ikebukuro"},{"time":"11:00 AM","name":"Espresso D Works","note":"Cafe brunch beside Sunshine City.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Coffee","date":"2026-11-11","area":"Ikebukuro"},{"time":"12:45 PM","name":"Sunshine City","note":"Shopping at the mall, Pokemon Center and Animate.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-11","area":"Ikebukuro"},{"time":"3:30 PM","name":"Gashapon Department Store","note":"Browse capsule toys and try the machines.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-11","area":"Ikebukuro"},{"time":"5:30 PM","name":"Kikanbo Ikebukuro","note":"Spicy miso ramen before the main dinner queue.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Ramen","date":"2026-11-11","area":"Ikebukuro"},{"time":"9:00 AM","name":"teamLab Planets","note":"Timed entry to the immersive art museum. Allow 90–105 minutes.","category":"fun","tags":["New","Book"],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"11:45 AM","name":"Nemuro Hanamaru · KITTE","note":"Sushi lunch at the Marunouchi branch.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Sushi","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"1:30 PM","name":"Ginza & Yurakucho","note":"Shopping and department-store browsing.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"3:30 PM","name":"Oosumi Tamaya","note":"Fruit daifuku snack in Ginza.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Daifuku","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"4:00 PM","name":"More Ginza shopping","note":"Continue browsing before dinner.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"5:30 PM","name":"Tempura Abe Ginza","note":"Tempura dinner; reserve ahead.","category":"food","tags":["Book"],"imageUrls":[],"mapUrl":"","subcategory":"Tempura","date":"2026-11-12","area":"Toyosu, Marunouchi & Ginza"},{"time":"8:30 AM","name":"Komeraku","note":"Chameshi and ochazuke breakfast.","category":"food","tags":["Picture 2"],"imageUrls":[],"mapUrl":"","subcategory":"Ochazuke","date":"2026-11-13","area":"Shibuya"},{"time":"10:00 AM","name":"Shibuya shops","note":"Browse around the station and Scramble Crossing.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-13","area":"Shibuya"},{"time":"10:45 AM","name":"Scramble Crossing","note":"See the famous crossing from the street or an upper floor.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-13","area":"Shibuya"},{"time":"11:30 AM","name":"Hikiniku to Come","note":"Hamburg rice lunch. Online registration only.","category":"food","tags":["Book"],"imageUrls":[],"mapUrl":"","subcategory":"Hamburg steak","date":"2026-11-13","area":"Shibuya"},{"time":"2:30 PM","name":"Kuro Mame or Acid Coffee","note":"Choose the cafe closest to the shopping route.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Coffee","date":"2026-11-13","area":"Shibuya"},{"time":"4:30 PM","name":"Optional Shibuya Sky","note":"Rooftop city views; book a timed slot if interested.","category":"fun","tags":["Optional","Book"],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-13","area":"Shibuya"},{"time":"6:30 PM","name":"Moheji · Scramble Square","note":"Monjayaki dinner directly above the station.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Monjayaki","date":"2026-11-13","area":"Shibuya"},{"time":"10:00 AM","name":"mipig cafe Harajuku","note":"Micro-pig visit. Reserve ahead and arrive 10 minutes early.","category":"fun","tags":["New","Book"],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"11:10 AM","name":"AMAM DACOTAN / I’m donut?","note":"Bakery and doughnut stop. Use mobile ordering if offered.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Bakery / doughnuts","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"12:00 PM","name":"Tonkatsu Maisen Aoyama","note":"Tonkatsu lunch. Arrive close to opening to reduce the queue.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Tonkatsu","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"1:45 PM","name":"Cat Street & Omotesando","note":"Walk and shop along this corridor.","category":"fun","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"4:00 PM","name":"Jean-Paul Hévin","note":"Chocolate drink break in Omotesando Hills.","category":"food","tags":["Picture 2"],"imageUrls":[],"mapUrl":"","subcategory":"Chocolate","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"5:00 PM","name":"Travel to Akasaka","note":"Allow time to get to dinner.","category":"travel","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"7:00 PM","name":"SABASU · Akasaka","note":"Reserved sourdough-pizza dinner.","category":"food","tags":["Book"],"imageUrls":[],"mapUrl":"","subcategory":"Pizza","date":"2026-11-14","area":"Harajuku, Omotesando & Akasaka"},{"time":"7:00 AM","name":"Breakfast near the hotel","note":"Eat before heading to the airport.","category":"food","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"Breakfast","date":"2026-11-15","area":"Departure"},{"time":"8:00 AM","name":"Leave for Haneda","note":"Airport transfer for the 10:45 flight.","category":"travel","tags":[],"imageUrls":[],"mapUrl":"","subcategory":"","date":"2026-11-15","area":"Departure"}],"foodTypes":["烤肉","Sushi","Tempura","咖喱饭","sabu-sabu","Omakase","Chameshi 茶饭","Okonomiyaki","Ramen","Unagi"]});
     let foodTypes = defaultPlan.foodTypes;
 
     const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
@@ -693,6 +627,7 @@
     }
 
     function displayDate(value) {
+      if (!String(value || '').trim()) return 'Unscheduled';
       const iso = parseDateValue(value);
       const [year, month, day] = iso.split('-').map(Number);
       const date = new Date(year, month - 1, day, 12);
@@ -741,7 +676,7 @@
         if (suppliedDays.length > 100) throw new Error('A trip can contain up to 100 dates.');
         suppliedDays.forEach(day => {
           if (!day || typeof day.date !== 'string' || !Array.isArray(day.stops) || day.stops.length > 300) throw new Error('A trip date has invalid details.');
-          const date = parseDateValue(day.date);
+          const date = day.date.trim() ? parseDateValue(day.date) : '';
           day.stops.forEach(stop => rawStops.push({ stop, date, area: String(day.area || '') }));
         });
         if (candidate.foodTypes && Array.isArray(candidate.foodTypes)) knownTypes.push(...candidate.foodTypes);
@@ -760,28 +695,31 @@
         const rawCategory = objectStop ? stop.category : stop?.[3];
         const categoryKey = rawCategory === 'shopping' || rawCategory === 'culture' ? 'fun' : rawCategory;
         const tagValues = objectStop ? stop.tags : stop?.[4];
-        if (typeof timeValue !== 'string' || typeof nameValue !== 'string' || typeof noteValue !== 'string' || !Object.hasOwn(categories, categoryKey) || !Array.isArray(tagValues)) throw new Error('A stop in the draft has an invalid format.');
-        const time = timeValue.trim();
+        if ((timeValue != null && typeof timeValue !== 'string') || typeof nameValue !== 'string' || typeof noteValue !== 'string' || !Object.hasOwn(categories, categoryKey) || !Array.isArray(tagValues)) throw new Error('A stop in the draft has an invalid format.');
+        const time = String(timeValue || '').trim();
         const name = nameValue.trim();
         const note = noteValue.trim();
         const tags = tagValues.filter(tag => typeof tag === 'string').slice(0, 10).map(tag => tag.slice(0, 40));
-        if (!time || time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
+        if (time.length > 40 || !name || name.length > 120 || note.length > 320) throw new Error('A stop has missing or overly long details.');
         const imageValue = objectStop ? stop.imageUrls : stop[5];
         const mapValue = objectStop ? stop.mapUrl : stop[6];
         if (imageValue != null && typeof imageValue !== 'string' && !Array.isArray(imageValue)) throw new Error('A stop image URL must be text or a list of URLs.');
         if (mapValue != null && typeof mapValue !== 'string') throw new Error('A stop Google Maps URL must be text.');
         const subcategoryValue = objectStop ? stop.subcategory : (stop[7] || '');
         const foodSubcategory = categoryKey === 'food' ? String(subcategoryValue || inferFoodSubcategory(name, note)).trim().slice(0, 60) : '';
-        const stopDate = parseDateValue(objectStop ? stop.date : (Array.isArray(stop) && stop.length >= 9 ? stop[8] : inheritedDate));
+        const rawDate = objectStop ? (stop.date ?? '') : (Array.isArray(stop) && stop.length >= 9 ? (stop[8] ?? '') : (inheritedDate ?? ''));
+        if (typeof rawDate !== 'string') throw new Error('A stop date must be text.');
+        const stopDate = rawDate.trim() ? parseDateValue(rawDate) : '';
         const area = String(objectStop ? (stop.area || '') : (Array.isArray(stop) && stop.length >= 10 ? stop[9] || '' : inheritedArea) || '').trim().slice(0, 160);
         return [time, name, note, categoryKey, tags, normalizeImageUrls(imageValue), normalizeGoogleMapsUrl(mapValue), foodSubcategory, stopDate, area];
       });
       const grouped = new Map();
       normalizedStops.forEach(stop => {
-        if (!grouped.has(stop[8])) grouped.set(stop[8], { key: stop[8], date: stop[8], area: '', stops: [] });
-        grouped.get(stop[8]).stops.push(stop);
+        const dayKey = stop[8] || 'unscheduled';
+        if (!grouped.has(dayKey)) grouped.set(dayKey, { key: dayKey, date: stop[8], area: '', stops: [] });
+        grouped.get(dayKey).stops.push(stop);
       });
-      const days = [...grouped.values()].sort((a, b) => a.date.localeCompare(b.date));
+      const days = [...grouped.values()].sort((a, b) => Number(!a.date) - Number(!b.date) || a.date.localeCompare(b.date));
       days.forEach(day => {
         day.area = [...new Set(day.stops.map(stop => stop[9]).filter(Boolean))].join(' · ');
       });
@@ -973,7 +911,7 @@
           '<div class="stops">' + visibleStops.map(({ stop, index }) => {
             const hasPhoto = Boolean(stopPhotos[stop[1]] || stopImageUrls(stop).length);
             const category = categories[stop[3]];
-            const safeTime = escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>');
+            const safeTime = stop[0] ? escapeHtml(stop[0]).replace(/ (AM|PM)$/, '<span>$1</span>') : '<span class="time-unscheduled">Time TBD</span>';
             const mapLink = stop[6]
               ? '<a class="map-link" href="' + escapeHtml(stop[6]) + '" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>'
               : '';
@@ -1088,8 +1026,8 @@
       editedStop = stopIndex === null ? null : { dayKey, stopIndex };
       const stop = stopIndex === null ? null : days.find(day => day.key === dayKey)?.stops[stopIndex];
       document.querySelector('#stop-dialog-title').textContent = stop ? 'Edit stop' : 'Add a stop';
-      dateField.value = stop?.[8] || dayKey || days[0]?.date || '';
-      areaField.value = stop ? (stop[9] || '') : (days.find(day => day.key === dateField.value)?.area || '');
+      dateField.value = stop ? (stop[8] || '') : (dayKey === 'unscheduled' ? '' : dayKey || days[0]?.date || '');
+      areaField.value = stop ? (stop[9] || '') : (days.find(day => day.key === dayKey)?.area || '');
       document.querySelector('#stop-time').value = stop?.[0] || '';
       document.querySelector('#stop-name').value = stop?.[1] || '';
       document.querySelector('#stop-note').value = stop?.[2] || '';
@@ -1218,7 +1156,7 @@
         event.preventDefault();
         const form = new FormData(stopForm);
         const date = String(form.get('date') || '');
-        try { parseDateValue(date); } catch { document.querySelector('#stop-date').setCustomValidity('Choose a valid date.'); document.querySelector('#stop-date').reportValidity(); return; }
+        try { if (date) parseDateValue(date); document.querySelector('#stop-date').setCustomValidity(''); } catch { document.querySelector('#stop-date').setCustomValidity('Choose a valid date.'); document.querySelector('#stop-date').reportValidity(); return; }
         const area = String(form.get('area') || '').trim();
         let imageUrls;
         try {
@@ -1241,22 +1179,27 @@
         }
         const category = String(form.get('category'));
         const subcategory = category === 'food' ? String(form.get('subcategory') || '').trim().slice(0, 60) : '';
-        const stop = [String(form.get('time')).trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), category, [], imageUrls, mapUrl, subcategory, date, area];
+        const stop = [String(form.get('time') || '').trim(), String(form.get('name')).trim(), String(form.get('note') || '').trim(), category, [], imageUrls, mapUrl, subcategory, date, area];
+        const dateKey = date || 'unscheduled';
         if (editedStop) {
           const oldDay = days.find(day => day.key === editedStop.dayKey);
           if (!oldDay || !oldDay.stops[editedStop.stopIndex]) return;
           oldDay.stops.splice(editedStop.stopIndex, 1);
-          if (oldDay.key === date) oldDay.stops.splice(editedStop.stopIndex, 0, stop);
-          else days.push({ key: date, date, area, stops: [stop] });
+          if (oldDay.key === dateKey) oldDay.stops.splice(editedStop.stopIndex, 0, stop);
+          else {
+            const targetDay = days.find(day => day.key === dateKey);
+            if (targetDay) targetDay.stops.push(stop);
+            else days.push({ key: dateKey, date, area, stops: [stop] });
+          }
         } else {
-          const targetDay = days.find(day => day.key === date);
+          const targetDay = days.find(day => day.key === dateKey);
           if (targetDay) targetDay.stops.push(stop);
-          else days.push({ key: date, date, area, stops: [stop] });
+          else days.push({ key: dateKey, date, area, stops: [stop] });
         }
         editedStop = null;
         stopDialog.close();
         document.querySelector('#stop-date').setCustomValidity('');
-        updatePlanAfterChange(date, 'Stop saved in this browser. Export JSON to share it.');
+        updatePlanAfterChange(dateKey, 'Stop saved in this browser. Export JSON to share it.');
       });
 
       timeline.addEventListener('click', event => {
