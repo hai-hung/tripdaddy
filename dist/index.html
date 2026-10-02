@@ -36,7 +36,6 @@
     a { color: inherit; }
     .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
     header {
-      position: sticky; top: 0; z-index: 10;
       background: rgba(247,243,235,.9);
       border-bottom: 1px solid rgba(16,38,63,.12);
       backdrop-filter: blur(14px);
@@ -64,7 +63,7 @@
     .hero-label span { opacity: .9; font-size: .875rem; }
 
     .toolbar { display: flex; align-items: center; gap: 9px; overflow-x: auto; padding: 8px 2px 18px; scrollbar-width: none; }
-    .filters-dock { position: sticky; top: 69px; z-index: 9; padding: 10px 16px 0; margin: 0 0 14px; border: 1px solid var(--line); border-radius: 16px; background: rgba(247,243,235,.96); box-shadow: 0 8px 22px rgba(16,38,63,.08); backdrop-filter: blur(14px); }
+    .filters-dock { position: sticky; top: 0; z-index: 10; padding: 10px 16px 0; margin: 0 0 14px; border: 1px solid var(--line); border-radius: 16px; background: rgba(247,243,235,.96); box-shadow: 0 8px 22px rgba(16,38,63,.08); backdrop-filter: blur(14px); }
     .controls { padding: 0 16px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,248,.78); }
     .plan-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0 13px; border-top: 1px solid #e9e5dc; }
     .plan-tools-main, .plan-tools-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
