@@ -43,6 +43,7 @@
     }
     .nav { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
     .brand { display: flex; align-items: center; gap: 12px; font-weight: 850; letter-spacing: -.03em; }
+    .brand-name { white-space: nowrap; }
     .mark { width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; color: white; background: var(--ink); box-shadow: 0 8px 18px rgba(16,38,63,.18); }
     .nav-meta { color: var(--muted); font-size: .9rem; }
     main { padding: 28px 0 72px; }
@@ -218,6 +219,8 @@
     }
     @media (max-width: 620px) {
       .shell { width: min(100% - 22px, 1180px); }
+      .brand { gap: 8px; }
+      .brand-name { font-size: .8rem; }
       .nav-meta { display: none; }
       main { padding-top: 16px; }
       .intro { gap: 12px; margin-bottom: 16px; }
@@ -284,7 +287,7 @@
 <body>
   <header>
     <div class="shell nav">
-      <div class="brand"><span class="mark">TD</span><span>TripDaddy</span></div>
+      <div class="brand"><span class="mark">TD</span><span class="brand-name">TripDaddy (八卦最前线 Japan 2026)</span></div>
       <div class="nav-meta">6–15 November 2026 · Tokyo, Fuji and Hakone</div>
     </div>
   </header>
