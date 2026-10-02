@@ -609,7 +609,7 @@
       ['? AM', 'Collect Car', '', 'travel', []],
       ['3:00PM', 'Drive to Hoei Villas', 'Fujisan Panoramic View of Mt. Fuji, Kawaguchiko', 'travel', [], undefined, undefined, '', '2026-11-08', 'Fuji']
     ]});
-    const defaultPlan = normalizePlan({ days: defaultDaySource, foodTypes: [] });
+    const defaultPlan = normalizePlan({ days: defaultDaySource, foodTypes: ['烤肉', 'Sushi', 'Tempura', '咖喱饭', 'sabu-sabu', 'Omakase', 'Chameshi 茶饭', 'Okonomiyaki', 'Ramen', 'Unagi'] });
     let foodTypes = defaultPlan.foodTypes;
 
     const PLAN_STORAGE_KEY = 'tokyo-trip-itinerary-draft-v1';
